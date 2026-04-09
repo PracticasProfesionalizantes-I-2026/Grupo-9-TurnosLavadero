@@ -1,2 +1,2 @@
-# Grupo_9-Turnos_para_Lavadero_de_Autos
+# Grupo_9-TurnosLavadero
 Tomás Martín Ponce y Juan Jesús Baigorria.
