@@ -2,20 +2,19 @@
 
 > Especificación elaborada siguiendo la guía
 > `GUIA-Especificacion-Casos-de-Uso.md` (sección 3).
-> Reglas de negocio RN-03 (no se pueden cancelar turnos pasados/vencidos) y RN-06 (el turno
-> debe estar activo para cancelarse) **propuestas** coherentemente con el proyecto de turnos
-> de lavadero; los endpoints HTTP y la matriz de trazabilidad a tests también son propuestos.
+> El cliente puede cancelar únicamente sus propios turnos. Empleados y administradores
+> pueden cancelar cualquier turno.
 
 | Campo | Valor |
 | --- | --- |
 | **ID del Caso de Uso** | CU-05 |
 | **Nombre** | Cancelar Turno |
-| **Actor Principal** | Cliente o Empleado |
+| **Actor Principal** | Cliente, Empleado o Administrador |
 | **Alcance / Nivel** | Sistema; meta de usuario |
 | **Stakeholders e intereses** | Actor → liberar su turno; Administración → liberar el horario para reasignarlo y mantener la agenda consistente |
 | **Disparador (Trigger)** | El actor solicita cancelar un turno previamente registrado |
 | **Prioridad / Frecuencia** | Media; frecuencia ocasional |
-| **Reglas de negocio relacionadas** | RN-03 (no cancelar turnos vencidos); RN-06 (turno activo) |
+| **Reglas de negocio relacionadas** | RN-06 (turno activo y futuro); RN-10 (permisos sobre el turno) |
 
 ---
 
@@ -25,44 +24,45 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
 
 ### 2. PRECONDICIONES
 1. El turno debe existir y encontrarse activo en la Capa de Persistencia (RN-06).
-2. El actor debe poseer un estado de autenticación activo (Token JWT válido) con permisos
-   de escritura sobre el recurso Turnos.
+2. El actor debe estar autenticado. Si es cliente, el turno debe pertenecerle (RN-10).
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 204)
-1. El Actor envía una petición al endpoint `DELETE /api/turnos/{id}`. *(El actor selecciona
-   el turno y solicita la cancelación.)*
-2. La **Capa de Presentación** (`TurnosController.DeleteTurno`) valida que el `id`
-   corresponda a un turno existente y que el actor tenga permiso de cancelación.
-3. La **Capa de Negocio** (`TurnoService.DeleteTurnoAsync`) verifica que el turno esté
-   activo y no vencido (RN-03, RN-06) y el Sistema solicita la confirmación al actor.
-4. El Actor confirma la cancelación.
-5. La **Capa de Persistencia** cancela el turno en la tabla `Turnos` (estado "Cancelado") y
-   libera el horario.
-6. El Sistema devuelve un código **204 No Content** confirmando la cancelación.
+1. El actor selecciona el turno y confirma la operación en la interfaz.
+2. La interfaz envía `PATCH /api/turnos/{id}/cancelacion` una sola vez confirmada la acción.
+3. La **Capa de Presentación** obtiene la identidad y el rol del actor autenticado.
+4. La **Capa de Negocio** (`TurnoService.CancelTurnoAsync`) verifica la existencia,
+   pertenencia, estado y fecha del turno (RN-10 y RN-06).
+5. La **Capa de Persistencia** actualiza el estado del turno a "Cancelado". No elimina el
+   registro porque debe conservarse su historial.
+6. El Sistema devuelve **204 No Content** y el horario queda liberado.
 
 ### 4. FLUJOS ALTERNATIVOS (Caminos Tristes / Excepciones)
 
-* **2a. Turno inexistente (HTTP 404 Not Found):**
-  1. Si en el Paso 2 el `id` del turno no existe en los registros.
+* **4a. Turno inexistente (HTTP 404 Not Found):**
+  1. Si en el Paso 4 el `id` del turno no existe en los registros.
   2. La **Capa de Negocio** no encuentra la entidad y lanza `TurnoNotFoundException`.
   3. El Sistema devuelve un código **404 Not Found**. Fin del caso de uso.
 
-* **3a. Turno vencido / no cancelable (HTTP 409 Conflict):**
-  1. Si en el Paso 3 el turno ya venció (o no está activo), violando la **RN-03** y la
-     **RN-06**. *(Derivado del FA2: intenta cancelar un turno pasado.)*
+* **4b. Cliente sin permiso sobre el turno (HTTP 403 Forbidden):**
+  1. Si el actor es cliente y el turno pertenece a otra persona, se viola la **RN-10**.
+  2. El Sistema rechaza la operación sin modificar ni revelar el turno.
+  3. El Sistema devuelve **403 Forbidden**. Fin del caso de uso.
+
+* **4c. Turno vencido / no cancelable (HTTP 409 Conflict):**
+  1. Si en el Paso 4 el turno ya venció o no está activo, se viola la **RN-06**.
   2. El Sistema frena la ejecución en la **Capa de Negocio** y lanza
      `TurnoNoCancelableException`.
   3. El Sistema devuelve un código **409 Conflict** con el mensaje: "No es posible cancelar
      turnos ya vencidos". Fin del caso de uso.
 
-* **4a. Actor decide no cancelar (sin código HTTP):**
-  1. Si en el Paso 4 el actor decide no cancelar. *(Derivado del FA1.)*
+* **1a. Actor decide no cancelar (sin petición HTTP):**
+  1. Si en el Paso 1 el actor decide no confirmar la cancelación.
   2. El Sistema mantiene el turno activo y no libera el horario.
   3. Fin del caso de uso (sin persistencia de cambio).
 
 ### 5. SUB-VARIACIONES (opcional)
-1. El actor puede cancelar el turno desde el panel web, desde la colección de Bruno o desde
-   un cliente HTTP (Postman, Swagger/Scalar).
+1. La confirmación visual aplica al panel web. En Bruno, Postman o Scalar la petición se
+   considera confirmada al momento de enviarla.
 2. En todas las variantes el resultado (`204 No Content`) es idéntico.
 
 ### 6. POSTCONDICIONES
@@ -79,23 +79,26 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
 | Código HTTP | Nombre Técnico | Contexto de Aplicación en el Caso de Uso |
 | --- | --- | --- |
 | `204` | No Content | Confirmación de la cancelación exitosa del recurso Turno (sin cuerpo). |
+| `403` | Forbidden | Un cliente intenta cancelar un turno que no le pertenece. |
 | `404` | Not Found | Inexistencia del recurso referenciado (Turno) en la Capa de Persistencia. |
-| `409` | Conflict | Violación de invariantes de negocio (RN-03 turno vencido / RN-06 turno no activo). |
+| `409` | Conflict | Violación de RN-06: turno vencido o no activo. |
 
 ### Nota: Validación vs. Verificación aplicada
 
 - **Validación (Presentación):** comprobación de que el `id` corresponde a un turno y de
   los permisos del actor.
-- **Verificación (Negocio, → 404/409):** RN-06 turno activo y RN-03 no cancelar turnos
-  vencidos (`TurnoNoCancelableException` → 409) y existencia del turno
-  (`TurnoNotFoundException` → 404). El negocio actúa como *defensa en profundidad*.
+- **Verificación (Negocio, → 403/404/409):** RN-10 pertenencia del turno
+  (`ForbiddenException` → 403), RN-06 turno activo y futuro
+  (`TurnoNoCancelableException` → 409) y existencia del turno
+  (`TurnoNotFoundException` → 404).
 
 ### Matriz de trazabilidad CU-05 → Test
 
 | Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
 | --- | --- | --- | --- |
-| Flujo principal | `204 No Content` | `DeleteTurnoAsync_CancelsAndReturnsNoContent` | `DeleteTurno_Returns204NoContent` |
-| 2a. Turno inexistente | `404 Not Found` | `DeleteTurnoAsync_WhenNonExistentTurno_ThrowsTurnoNotFoundException` | `DeleteTurno_WhenNonExistentTurno_Returns404NotFound` |
-| 3a. Turno vencido / no cancelable | `409 Conflict` | `DeleteTurnoAsync_WhenTurnoVencido_ThrowsTurnoNoCancelableException` | `DeleteTurno_WhenTurnoVencido_Returns409Conflict` |
+| Flujo principal | `204 No Content` | `CancelTurnoAsync_CancelsTurno` | `CancelTurno_Returns204NoContent` |
+| 4a. Turno inexistente | `404 Not Found` | `CancelTurnoAsync_WhenNonExistentTurno_ThrowsTurnoNotFoundException` | `CancelTurno_WhenNonExistentTurno_Returns404NotFound` |
+| 4b. Cliente sin permiso | `403 Forbidden` | `CancelTurnoAsync_WhenTurnoBelongsToAnotherClient_ThrowsForbiddenException` | `CancelTurno_WhenTurnoBelongsToAnotherClient_Returns403Forbidden` |
+| 4c. Turno vencido / no cancelable | `409 Conflict` | `CancelTurnoAsync_WhenTurnoVencido_ThrowsTurnoNoCancelableException` | `CancelTurno_WhenTurnoVencido_Returns409Conflict` |
 
 > Regla de oro: cada flujo del caso de uso debe tener al menos un test.

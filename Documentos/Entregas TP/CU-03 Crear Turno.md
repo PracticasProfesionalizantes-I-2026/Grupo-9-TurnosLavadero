@@ -2,9 +2,8 @@
 
 > Especificación elaborada siguiendo la guía
 > `GUIA-Especificacion-Casos-de-Uso.md` (sección 3).
-> Reglas de negocio RN-01 (sin solapamiento de turnos) y RN-03 (el turno se asocia a un
-> cliente registrado) **propuestas** coherentemente con el proyecto de turnos de lavadero;
-> los endpoints HTTP y la matriz de trazabilidad a tests también son propuestos.
+> Este caso corresponde a la carga de un turno por parte del personal en nombre de un
+> cliente. Empleado y Administrador son roles válidos para esta operación.
 
 | Campo | Valor |
 | --- | --- |
@@ -15,7 +14,7 @@
 | **Stakeholders e intereses** | Empleado → registrar el turno en nombre del cliente; Cliente → quedar con su turno registrado; Administración → mantener la agenda consistente |
 | **Disparador (Trigger)** | El empleado/administrador registra un turno a nombre de un cliente |
 | **Prioridad / Frecuencia** | Alta; alta frecuencia (atención presencial de clientes) |
-| **Reglas de negocio relacionadas** | RN-01 (sin solapamiento de turnos); RN-03 (cliente registrado obligatorio) |
+| **Reglas de negocio relacionadas** | RN-01 (sin solapamiento); RN-02 (servicio activo); RN-03 (cliente existente); RN-11 (fecha futura) |
 
 ---
 
@@ -37,8 +36,9 @@ disponibilidad, registre el turno y confirme la creación.
    busca al cliente.)*
 2. La **Capa de Presentación** (`TurnosController.CreateTurno`) valida que el JSON sea
    estructuralmente correcto y que los campos requeridos estén presentes y no vacíos.
-3. La **Capa de Negocio** (`TurnoService.CreateTurnoAsync`) verifica que el cliente exista
-   (RN-03) y que el horario esté libre (RN-01), además de que el servicio sea válido.
+3. La **Capa de Negocio** (`TurnoService.CreateTurnoAsync`) verifica que el cliente exista,
+   que el servicio esté activo, que la fecha sea futura y que el horario esté libre
+   (RN-03, RN-02, RN-11 y RN-01).
 4. La **Capa de Persistencia** genera un nuevo `Id` (GUID) y guarda el registro en la tabla
    `Turnos` con estado "Confirmado".
 5. El Sistema devuelve un código **201 Created** con la información del turno creado.
@@ -74,6 +74,16 @@ disponibilidad, registre el turno y confirme la creación.
   3. El Sistema devuelve un código **409 Conflict** con el mensaje: "El horario seleccionado
      ya no se encuentra disponible". (Alternativa operativa: ofrecer otros horarios). Fin del
      caso de uso.
+
+* **3c. Servicio inexistente o inactivo (HTTP 404 Not Found):**
+  1. Si en el Paso 3 el servicio no existe o está inactivo, se viola la **RN-02**.
+  2. La Capa de Negocio lanza `ServicioNotFoundException`.
+  3. El Sistema devuelve **404 Not Found**. Fin del caso de uso.
+
+* **3d. Fecha u hora pasada (HTTP 400 Bad Request):**
+  1. Si en el Paso 3 la fecha y hora no son futuras, se viola la **RN-11**.
+  2. La Capa de Negocio lanza `ValidationException`.
+  3. El Sistema devuelve **400 Bad Request**. Fin del caso de uso.
 
 * **5a. Empleado cancela la operación (sin código HTTP):**
   1. Si en cualquier paso previo a la confirmación el empleado cancela la operación.
@@ -122,6 +132,8 @@ disponibilidad, registre el turno y confirme la creación.
 | 2a. Dato obligatorio faltante | `400 Bad Request` | — (se detecta vía `[Required]`) | `CreateTurno_WithMissingRequiredField_Returns400BadRequest` |
 | 3a. Cliente inexistente | `404 Not Found` | `CreateTurnoAsync_WhenNonExistentCliente_ThrowsClienteNotFoundException` | `CreateTurno_WhenNonExistentCliente_Returns404NotFound` |
 | 3b. Horario ocupado | `409 Conflict` | `CreateTurnoAsync_WhenOverlappingSchedule_ThrowsHorarioNoDisponibleException` | `CreateTurno_WhenOverlappingSchedule_Returns409Conflict` |
+| 3c. Servicio inexistente | `404 Not Found` | `CreateTurnoAsync_WhenNonExistentServicio_ThrowsServicioNotFoundException` | `CreateTurno_WhenNonExistentServicio_Returns404NotFound` |
+| 3d. Fecha pasada | `400 Bad Request` | `CreateTurnoAsync_WhenDateIsNotFuture_ThrowsValidationException` | `CreateTurno_WhenDateIsNotFuture_Returns400BadRequest` |
 
 > Regla de oro: cada flujo del caso de uso debe tener al menos un test. En los flujos
 > resueltos en la Capa de Presentación (1a, 2a) el test aplicable es el de integración

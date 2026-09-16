@@ -1,6 +1,14 @@
 # Grupo-9-TurnosLavadero
 Tomás Martín Ponce y Juan Jesús Baigorria.
 
+Sistema de gestión de turnos para un lavadero de autos.
+
+## Documentación local
+
+- [Alcance del sistema](Documentos/Entregas%20TP/Alcance%20del%20Sistema.md)
+- [Reglas de negocio](Documentos/Entregas%20TP/Reglas%20de%20Negocio.md)
+- [Casos de Uso](Documentos/Entregas%20TP/)
+
 Documentación
 
 link:
