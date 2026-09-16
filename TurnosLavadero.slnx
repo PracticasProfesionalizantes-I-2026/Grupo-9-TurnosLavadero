@@ -1,4 +1,6 @@
 <Solution>
   <Project Path="Shared/Shared.csproj" />
   <Project Path="DataAccess/DataAccess.csproj" />
+  <Project Path="BusinessLogic/BusinessLogic.csproj" />
+  <Project Path="Tests/UnitTests/UnitTests.csproj" />
 </Solution>

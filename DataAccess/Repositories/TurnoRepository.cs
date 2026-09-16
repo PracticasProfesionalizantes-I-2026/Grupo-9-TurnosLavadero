@@ -32,6 +32,15 @@ public sealed class TurnoRepository(LavaderoDbContext context) : ITurnoRepositor
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<Turno>> GetUpcomingAsync(
+        DateTimeOffset from,
+        DateTimeOffset to,
+        CancellationToken cancellationToken = default) =>
+        await ReadQuery()
+            .Where(x => x.FechaHora >= from && x.FechaHora < to)
+            .OrderBy(x => x.FechaHora)
+            .ToListAsync(cancellationToken);
+
     public Task<bool> ExistsActiveAtAsync(
         DateTimeOffset fechaHora,
         Guid? excludeId = null,
