@@ -1,0 +1,15 @@
+meta {
+  name: Obtener cliente
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/clientes/{{clienteId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

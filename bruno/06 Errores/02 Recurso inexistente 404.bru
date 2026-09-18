@@ -1,0 +1,15 @@
+meta {
+  name: Recurso inexistente - 404
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/servicios/00000000-0000-0000-0000-000000000001
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

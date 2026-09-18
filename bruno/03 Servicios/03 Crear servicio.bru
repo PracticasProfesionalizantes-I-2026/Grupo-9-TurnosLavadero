@@ -1,0 +1,28 @@
+meta {
+  name: Crear servicio
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/servicios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Lavado premium",
+    "importe": 22000
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("servicioId", res.body.id);
+  }
+}

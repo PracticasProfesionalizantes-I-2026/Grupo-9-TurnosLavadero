@@ -1,0 +1,29 @@
+meta {
+  name: Crear turno
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "clienteId": "{{clienteId}}",
+    "servicioId": "{{servicioId}}",
+    "fechaHora": "2026-12-10T15:00:00-03:00"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("turnoId", res.body.id);
+  }
+}

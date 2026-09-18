@@ -1,0 +1,23 @@
+meta {
+  name: Modificar servicio
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/servicios/{{servicioId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Lavado premium actualizado",
+    "importe": 25000,
+    "activo": true
+  }
+}

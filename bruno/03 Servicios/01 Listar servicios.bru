@@ -1,0 +1,15 @@
+meta {
+  name: Listar servicios
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/servicios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

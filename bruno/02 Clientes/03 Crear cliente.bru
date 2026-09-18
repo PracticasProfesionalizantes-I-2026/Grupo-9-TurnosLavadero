@@ -1,0 +1,31 @@
+meta {
+  name: Crear cliente
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/clientes
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Ana",
+    "apellido": "Demo",
+    "emailContacto": "ana.demo@example.test",
+    "telefono": "+54 3493 000003",
+    "notificacionesHabilitadas": true
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("clienteId", res.body.id);
+  }
+}

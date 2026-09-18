@@ -1,0 +1,15 @@
+meta {
+  name: Consultar agenda
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/turnos/agenda?fecha=2026-12-10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

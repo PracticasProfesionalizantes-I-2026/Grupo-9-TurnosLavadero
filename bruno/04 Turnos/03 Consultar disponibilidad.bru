@@ -1,0 +1,15 @@
+meta {
+  name: Consultar disponibilidad
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/turnos/disponibilidad?fechaHora=2026-12-10T15:00:00-03:00
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

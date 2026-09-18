@@ -1,0 +1,15 @@
+meta {
+  name: Obtener servicio
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/servicios/{{servicioId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

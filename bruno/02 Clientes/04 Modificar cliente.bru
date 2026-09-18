@@ -1,0 +1,26 @@
+meta {
+  name: Modificar cliente
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/clientes/{{clienteId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nombre": "Ana",
+    "apellido": "Demo Actualizada",
+    "emailContacto": "ana.demo@example.test",
+    "telefono": "+54 3493 000004",
+    "notificacionesHabilitadas": true,
+    "activo": true
+  }
+}

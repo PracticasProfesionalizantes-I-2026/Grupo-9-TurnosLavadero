@@ -1,0 +1,23 @@
+meta {
+  name: Horario ocupado - 409
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "clienteId": "{{clienteId}}",
+    "servicioId": "{{servicioId}}",
+    "fechaHora": "2026-12-10T15:00:00-03:00"
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Procesar recordatorios
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/recordatorios/procesar?desde=2026-12-09T00:00:00Z&hasta=2026-12-11T00:00:00Z
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
