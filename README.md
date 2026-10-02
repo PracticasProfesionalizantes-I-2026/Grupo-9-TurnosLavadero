@@ -28,12 +28,6 @@ Definen el objetivo del sistema, los actores, permisos y restricciones de las op
 - [Alcance del sistema](Documentos/Entregas%20TP/Alcance%20del%20Sistema.md)
 - [Reglas de negocio](Documentos/Entregas%20TP/Reglas%20de%20Negocio.md)
 
-### 👤 Actores y casos de uso
-
-Especificaciones de los flujos principales y alternativos de cada operación.
-
-[Consultar el índice de casos de uso](Documentos/Entregas%20TP/README.md)
-
 ### 🏗️ Arquitectura y ejecución
 
 - [Plan de arquitectura](PLAN-ARQUITECTURA.md)
