@@ -14,28 +14,30 @@
 | **Stakeholders e intereses** | Cliente → no olvidar su turno próximo; Administración → reducir turnos no presentados y optimizar la agenda |
 | **Disparador (Trigger)** | Se alcanza el horario configurado para procesar recordatorios pendientes |
 | **Prioridad / Frecuencia** | Media; ejecución periódica (por cada turno próximo) |
-| **Reglas de negocio relacionadas** | RN-04 (medio de contacto válido); RN-05 (respeto de la preferencia de notificaciones) |
+| **Reglas de negocio relacionadas** | RN-04 (correo electrónico válido); RN-05 (respeto de la preferencia de notificaciones) |
 
 ---
 
 ### 1. BREVE DESCRIPCIÓN
 El sistema envía al cliente una notificación para recordarle que tiene un turno próximo de
-lavado, siempre que el turno esté confirmado y el cliente tenga un medio de contacto válido y
+lavado, siempre que el turno esté confirmado y el cliente tenga un correo electrónico válido y
 las notificaciones habilitadas.
 
 ### 2. PRECONDICIONES
 1. Debe existir al menos un turno confirmado con fecha próxima en la Capa de Persistencia.
 2. El cliente debe tener un medio de contacto registrado y válido (en la tabla `Clientes`).
-3. El proceso se ejecuta con credenciales internas y no requiere una acción del cliente.
+3. SMTP está configurado y `Recordatorios:Habilitados` está activado. El proceso interno
+   no requiere una acción del cliente. La ejecución HTTP manual requiere un administrador.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 200)
-1. El proceso programado ejecuta `POST /api/recordatorios/procesar`; la **Capa de Negocio**
+1. `RecordatorioWorker` invoca el procesador interno periódicamente; la **Capa de Negocio**
    identifica los turnos próximos cuyo recordatorio aún no fue procesado.
-2. La **Capa de Negocio** (`RecordatorioService`) genera el recordatorio para cada turno,
+2. La **Capa de Negocio** (`RecordatorioProcessor`) genera el recordatorio para cada turno,
    seleccionando el medio de contacto del cliente registrado.
 3. Un servicio de notificaciones realiza el envío. La **Capa de Persistencia** únicamente
    registra el resultado del intento y nunca envía mensajes por sí misma.
-4. El Sistema devuelve un código **200 OK** con el detalle de los recordatorios procesados.
+4. El proceso registra el resumen. La variante manual `POST /api/recordatorios/procesar`
+   devuelve **200 OK** con el detalle de los recordatorios procesados.
 
 ### 4. FLUJOS ALTERNATIVOS (Caminos Tristes / Excepciones)
 
@@ -45,8 +47,8 @@ las notificaciones habilitadas.
   2. El Sistema descarta el recordatorio y no envía la notificación.
   3. Fin del caso de uso (sin envío).
 
-* **2a. Cliente sin medio de contacto válido (registro de imposibilidad):**
-  1. Si en el Paso 2 el cliente no tiene un medio de contacto válido registrado, violando
+* **2a. Cliente sin correo electrónico válido (registro de imposibilidad):**
+  1. Si en el Paso 2 el cliente no tiene un correo electrónico válido registrado, violando
      la **RN-04**.
   2. El Sistema informa la falta de datos, registra la imposibilidad de enviar y continúa
      con el siguiente turno.
@@ -59,8 +61,7 @@ las notificaciones habilitadas.
   3. Fin del caso de uso (sin envío).
 
 ### 5. SUB-VARIACIONES (opcional)
-1. El medio de contacto puede ser correo electrónico o teléfono (SMS), según lo registrado
-   por el cliente.
+1. El medio de contacto puede ser correo electrónico mediante SMTP. SMS queda fuera de esta versión.
 2. En todas las variantes el turno debe estar confirmado y la preferencia de notificaciones
    debe estar habilitada.
 
@@ -88,14 +89,14 @@ las notificaciones habilitadas.
 - El sistema **registra la imposibilidad de envío** en lugar de abortar todo el proceso
   cuando un turno particular no puede recibir recordatorio.
 
-### Matriz de trazabilidad CU-02 → Test
+### Matriz de trazabilidad
 
-| Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
-| --- | --- | --- | --- |
-| Flujo principal | `200 OK` | `ProcesarRecordatoriosAsync_ReturnsProcessedReminders` | `ProcesarRecordatorios_Returns200OK` |
-| 1a. Turno cancelado | sin envío | `ProcesarRecordatoriosAsync_WhenTurnoCancelado_SkipsReminder` | `ProcesarRecordatorios_WhenCanceledTurno_ExcludesReminder` |
-| 2a. Sin medio de contacto | registro fallido | `ProcesarRecordatoriosAsync_WhenNoContact_LogsFailedAttempt` | `ProcesarRecordatorios_WithoutContact_Returns200WithFailedItem` |
-| 2b. Notificaciones desactivadas | sin envío | `ProcesarRecordatoriosAsync_WhenNotificationsDisabled_SkipsReminder` | `ProcesarRecordatorios_WhenNotificationsDisabled_NoReminder` |
+Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
 
-> Regla de oro: cada flujo del caso de uso debe tener al menos un test. Los flujos 1a y 2b
-> no producen envío, por lo que el test verifica que el recordatorio queda excluido.
+### Operación y errores del proveedor
+
+La ventana predeterminada cubre las próximas 24 horas y se revisa cada 5 minutos.
+Un error SMTP se registra como fallido y no detiene los demás avisos. Un intervalo manual
+inválido devuelve 400; un usuario sin sesión recibe 401 y uno sin rol administrador, 403.
+Todos los intentos procesados se excluyen de ejecuciones posteriores, incluidos fallidos y omitidos.
+Consultar [configuración y límites](../RECORDATORIOS.md).

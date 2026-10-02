@@ -43,4 +43,6 @@ No se administran vehículos como entidad independiente en esta primera versión
 - CU-05 Cancelar Turno.
 - CU-06 Gestionar Servicios.
 
-El registro, inicio de sesión, consulta de disponibilidad, consulta de turnos, agenda diaria y gestión completa de clientes permanecen identificados como funcionalidades del sistema, pero requieren una especificación detallada propia antes de implementarse.
+Las funcionalidades adicionales están especificadas en CU-07 Registrar Cliente, CU-08 Iniciar Sesión, CU-09 Consultar Disponibilidad, CU-10 Consultar Turnos Propios, CU-11 Consultar Agenda Diaria, CU-12 Gestionar Clientes y CU-13 Consultar Servicios. El índice completo se encuentra en [README.md](README.md).
+
+Los recordatorios automáticos requieren SMTP configurado y activación explícita. La versión implementada usa correo electrónico; SMS queda fuera del alcance actual. No incluye una interfaz web para usuarios finales.

@@ -48,8 +48,8 @@ partial class LavaderoDbContextModelSnapshot : ModelSnapshot
             b.Property<Guid>("Id").HasColumnType("TEXT");
             b.Property<Guid>("ClienteId").HasColumnType("TEXT");
             b.Property<int>("Estado").HasColumnType("INTEGER");
-            b.Property<DateTimeOffset>("FechaCreacion").HasColumnType("TEXT");
-            b.Property<DateTimeOffset>("FechaHora").HasColumnType("TEXT");
+            b.Property<DateTime>("FechaCreacion").HasColumnType("TEXT");
+            b.Property<DateTime>("FechaHora").HasColumnType("TEXT");
             b.Property<Guid>("ServicioId").HasColumnType("TEXT");
             b.HasKey("Id");
             b.HasIndex("ClienteId");
@@ -77,8 +77,8 @@ partial class LavaderoDbContextModelSnapshot : ModelSnapshot
             b.Property<Guid>("Id").HasColumnType("TEXT");
             b.Property<string>("Detalle").HasMaxLength(500).HasColumnType("TEXT");
             b.Property<int>("Estado").HasColumnType("INTEGER");
-            b.Property<DateTimeOffset?>("FechaProcesada").HasColumnType("TEXT");
-            b.Property<DateTimeOffset>("FechaProgramada").HasColumnType("TEXT");
+            b.Property<DateTime?>("FechaProcesada").HasColumnType("TEXT");
+            b.Property<DateTime>("FechaProgramada").HasColumnType("TEXT");
             b.Property<Guid>("TurnoId").HasColumnType("TEXT");
             b.HasKey("Id");
             b.HasIndex("TurnoId", "FechaProgramada").IsUnique();

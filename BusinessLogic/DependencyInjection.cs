@@ -14,6 +14,8 @@ public static class DependencyInjection
         services.AddScoped<ITurnoService, TurnoService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IRecordatorioService, RecordatorioService>();
+        services.AddScoped<IRecordatorioProcessor, RecordatorioProcessor>();
+        services.AddSingleton<RecordatorioProcessingLock>();
         return services;
     }
 }
