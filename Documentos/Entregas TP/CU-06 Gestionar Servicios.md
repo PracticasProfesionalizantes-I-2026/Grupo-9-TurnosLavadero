@@ -31,7 +31,7 @@ cambios.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 201/200)
 1. El Actor envía una petición al endpoint correspondiente del recurso `/api/servicios`
-   (JSON con `nombre` e `importe`):
+   (JSON con `nombre` e `importe` para alta/modificación; eliminación sin cuerpo):
    - **Alta:** `POST /api/servicios` → **201 Created**.
    - **Modificación:** `PUT /api/servicios/{id}` → **200 OK**.
    - **Eliminación:** `DELETE /api/servicios/{id}` → **204 No Content**.
@@ -129,19 +129,6 @@ cambios.
   servicio (`ServicioNotFoundException` → 404). El negocio actúa como
   *defensa en profundidad*.
 
-### Matriz de trazabilidad CU-06 → Test
+### Matriz de trazabilidad
 
-| Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
-| --- | --- | --- | --- |
-| Flujo principal (alta) | `201 Created` | `CreateServicioAsync_SavesAndReturnsCreatedServicio` | `CreateServicio_ReturnsSuccessAndCreatedServicio` |
-| Flujo principal (modificación) | `200 OK` | `UpdateServicioAsync_UpdatesAndReturnsUpdatedServicio` | `UpdateServicio_ReturnsSuccessAndUpdatedServicio` |
-| Flujo principal (eliminación) | `204 No Content` | `DeleteServicioAsync_DeletesAndReturnsNoContent` | `DeleteServicio_Returns204NoContent` |
-| 1a. JSON inválido | `400 Bad Request` | — (model binding) | `CreateServicio_WithInvalidJson_Returns400BadRequest` |
-| 2a. Importe sin definir | `400 Bad Request` | `CreateServicioAsync_WithoutImporte_ThrowsValidationException` | `CreateServicio_WithoutImporte_Returns400BadRequest` |
-| 3a. Nombre duplicado | `409 Conflict` | `CreateServicioAsync_WhenDuplicateName_ThrowsServicioDuplicadoException` | `CreateServicio_WhenDuplicateName_Returns409Conflict` |
-| 4a. Servicio inexistente | `404 Not Found` | `UpdateServicioAsync_WhenNonExistentServicio_ThrowsServicioNotFoundException` | `UpdateServicio_WhenNonExistentServicio_Returns404NotFound` |
-| 4b. Servicio con turnos | `409 Conflict` | `DeleteServicioAsync_WhenHasTurnos_ThrowsServicioConTurnosException` | `DeleteServicio_WhenHasTurnos_Returns409Conflict` |
-
-> Regla de oro: cada flujo del caso de uso debe tener al menos un test. El flujo 4c
-> (eliminación sin confirmación) se cubre con un test de integración que verifica que el
-> borrado no se persiste.
+Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.

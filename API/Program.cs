@@ -30,7 +30,21 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IActorContext, ActorContext>();
 builder.Services.AddSingleton<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
-builder.Services.AddScoped<INotificationSender, LoggingNotificationSender>();
+builder.Services.AddOptions<SmtpOptions>()
+    .BindConfiguration(SmtpOptions.SectionName)
+    .Validate(x => x.Port is > 0 and <= 65535, "Smtp:Port inválido.")
+    .ValidateOnStart();
+builder.Services.AddOptions<RecordatorioOptions>()
+    .BindConfiguration(RecordatorioOptions.SectionName)
+    .Validate(x => x.IntervaloMinutos > 0 && x.AnticipacionHoras > 0,
+        "El intervalo y la anticipación de recordatorios deben ser positivos.")
+    .Validate(x => !x.Habilitados ||
+        (!string.IsNullOrWhiteSpace(builder.Configuration["Smtp:Host"]) &&
+         System.Net.Mail.MailAddress.TryCreate(builder.Configuration["Smtp:From"], out _)),
+        "Configure Smtp:Host y Smtp:From antes de habilitar recordatorios.")
+    .ValidateOnStart();
+builder.Services.AddScoped<INotificationSender, SmtpNotificationSender>();
+builder.Services.AddHostedService<RecordatorioWorker>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

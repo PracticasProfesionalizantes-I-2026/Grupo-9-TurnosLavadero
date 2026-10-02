@@ -97,24 +97,76 @@ public sealed class RecordatorioServiceTests
     public async Task ProcessAsync_WhenActorIsNotAdmin_ThrowsForbiddenException()
     {
         var service = new RecordatorioService(
-            Mock.Of<ITurnoRepository>(),
-            Mock.Of<IRecordatorioRepository>(),
-            Mock.Of<INotificationSender>(),
-            new ActorContextStub { Rol = RolUsuario.Empleado },
-            new FixedClock(Now));
+            Mock.Of<IRecordatorioProcessor>(),
+            new ActorContextStub { Rol = RolUsuario.Empleado });
 
         await Assert.ThrowsAsync<ForbiddenException>(() => service.ProcessAsync(Now, Now.AddDays(1)));
     }
 
-    private static RecordatorioService CreateService(
+    [Theory]
+    [InlineData("cancelado", 1, 0)]
+    [InlineData("sin-contacto", 0, 1)]
+    [InlineData("contacto-invalido", 0, 1)]
+    [InlineData("procesado", 0, 0)]
+    public async Task ProcessAsync_WithExcludedTurno_DoesNotSend(string scenario, int omitted, int failed)
+    {
+        var turno = CreateTurno();
+        if (scenario == "cancelado") turno.Estado = EstadoTurno.Cancelado;
+        if (scenario == "sin-contacto") turno.Cliente.EmailContacto = "";
+        if (scenario == "contacto-invalido") turno.Cliente.EmailContacto = "correo-invalido";
+        var turnos = new Mock<ITurnoRepository>();
+        var reminders = new Mock<IRecordatorioRepository>();
+        var sender = new Mock<INotificationSender>();
+        turnos.Setup(x => x.GetUpcomingAsync(It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([turno]);
+        reminders.Setup(x => x.ExistsProcessedForTurnoAsync(turno.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(scenario == "procesado");
+        reminders.Setup(x => x.CreateAsync(It.IsAny<Recordatorio>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Recordatorio reminder, CancellationToken _) => reminder);
+        var result = await CreateService(turnos, reminders, sender).ProcessAsync(Now, Now.AddDays(2));
+        Assert.Equal(omitted, result.Omitidos);
+        Assert.Equal(failed, result.Fallidos);
+        sender.Verify(x => x.SendTurnoReminderAsync(It.IsAny<Turno>(), It.IsAny<CancellationToken>()), Times.Never);
+        reminders.Verify(x => x.CreateAsync(It.IsAny<Recordatorio>(), It.IsAny<CancellationToken>()),
+            scenario == "procesado" ? Times.Never() : Times.Once());
+    }
+
+    [Fact]
+    public async Task ProcessAsync_WithInvalidRange_ThrowsWithoutQuerying()
+    {
+        var turnos = new Mock<ITurnoRepository>();
+        var processor = CreateService(turnos, new Mock<IRecordatorioRepository>(), new Mock<INotificationSender>());
+        await Assert.ThrowsAsync<ValidationException>(() => processor.ProcessAsync(Now, Now));
+        turnos.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task ProcessAsync_WhenCanceled_DoesNotRegisterFailedDelivery()
+    {
+        using var cancellation = new CancellationTokenSource();
+        var turno = CreateTurno();
+        var turnos = new Mock<ITurnoRepository>();
+        var reminders = new Mock<IRecordatorioRepository>();
+        var sender = new Mock<INotificationSender>();
+        turnos.Setup(x => x.GetUpcomingAsync(It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([turno]);
+        sender.Setup(x => x.SendTurnoReminderAsync(turno, It.IsAny<CancellationToken>()))
+            .Callback(() => cancellation.Cancel())
+            .ThrowsAsync(new OperationCanceledException(cancellation.Token));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            CreateService(turnos, reminders, sender).ProcessAsync(Now, Now.AddDays(2), cancellation.Token));
+        reminders.Verify(x => x.CreateAsync(It.IsAny<Recordatorio>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    private static RecordatorioProcessor CreateService(
         Mock<ITurnoRepository> turnoRepository,
         Mock<IRecordatorioRepository> recordatorioRepository,
         Mock<INotificationSender> sender) => new(
             turnoRepository.Object,
             recordatorioRepository.Object,
             sender.Object,
-            new ActorContextStub { Rol = RolUsuario.Administrador },
-            new FixedClock(Now));
+            new FixedClock(Now),
+            new RecordatorioProcessingLock());
 
     private static Turno CreateTurno()
     {

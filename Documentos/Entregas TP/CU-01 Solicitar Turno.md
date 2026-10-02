@@ -28,13 +28,13 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
 2. El cliente debe estar registrado y autenticado con un Token JWT válido.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 201)
-1. El Actor envía una petición a `POST /api/turnos` con `idServicio`, `fecha` y `hora`. El
+1. El Actor envía una petición a `POST /api/turnos` con `servicioId`, `fechaHora`. El
    sistema obtiene el cliente autenticado desde el token; el cliente no puede indicar el ID
    de otra persona.
-2. La **Capa de Presentación** (`TurnosController.CreateTurno`) valida que el JSON sea
+2. La **Capa de Presentación** (`TurnosController.Create`) valida que el JSON sea
    estructuralmente correcto (data annotations `[Required]` sobre el DTO) y que los campos
    requeridos estén presentes y no vacíos.
-3. La **Capa de Negocio** (`TurnoService.CreateTurnoAsync`) verifica que el cliente exista,
+3. La **Capa de Negocio** (`TurnoService.CreateAsync`) verifica que el cliente exista,
    que el servicio esté activo, que la fecha sea futura y que el horario esté libre,
    aplicando **RN-03**, **RN-02**, **RN-11** y **RN-01**.
 4. La **Capa de Persistencia** genera un nuevo `Id` (GUID) y guarda el registro en la tabla
@@ -52,7 +52,7 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
   3. El Sistema devuelve un código **400 Bad Request**. Fin del caso de uso.
 
 * **2a. Dato obligatorio faltante (HTTP 400 Bad Request):**
-  1. Si en el Paso 2 el JSON no incluye `idServicio`, `fecha` u `hora`
+  1. Si en el Paso 2 el JSON no incluye `servicioId`, `fechaHora`
      (cualquiera de ellos).
   2. El Sistema (Capa de Presentación) rechaza la petición por error de validación
      (`ModelState.IsValid == false`).
@@ -67,8 +67,8 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
   3. El Sistema devuelve un código **409 Conflict** con el mensaje: "El horario seleccionado
      ya no se encuentra disponible". Fin del caso de uso.
 
-* **3b. Servicio inexistente o sin importe (HTTP 404 Not Found):**
-  1. Si en el Paso 3 el `idServicio` enviado no existe en los registros de la base de datos,
+* **3b. Servicio inexistente o inactivo (HTTP 404 Not Found):**
+  1. Si en el Paso 3 el `servicioId` enviado no existe en los registros de la base de datos,
      violando la **RN-02**.
   2. La **Capa de Negocio** no encuentra la entidad correspondiente y lanza
      `ServicioNotFoundException`.
@@ -117,17 +117,6 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
   (`HorarioNoDisponibleException` → 409) y RN-02 existencia del servicio
   (`ServicioNotFoundException` → 404). El negocio funciona como *defensa en profundidad*.
 
-### Matriz de trazabilidad CU-01 → Test
+### Matriz de trazabilidad
 
-| Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
-| --- | --- | --- | --- |
-| Flujo principal | `201 Created` | `CreateTurnoAsync_SavesAndReturnsCreatedTurno` | `CreateTurno_ReturnsSuccessAndCreatedTurno` |
-| 1a. JSON inválido | `400 Bad Request` | — (model binding, no pasa por Negocio) | `CreateTurno_WithInvalidJson_Returns400BadRequest` |
-| 2a. Dato obligatorio faltante | `400 Bad Request` | — (se detecta vía `[Required]` en Presentación) | `CreateTurno_WithMissingRequiredField_Returns400BadRequest` |
-| 3a. Horario no disponible | `409 Conflict` | `CreateTurnoAsync_WhenOverlappingSchedule_ThrowsHorarioNoDisponibleException` | `CreateTurno_WhenOverlappingSchedule_Returns409Conflict` |
-| 3b. Servicio inexistente | `404 Not Found` | `CreateTurnoAsync_WhenNonExistentServicio_ThrowsServicioNotFoundException` | `CreateTurno_WhenNonExistentServicio_Returns404NotFound` |
-| 3c. Fecha pasada | `400 Bad Request` | `CreateTurnoAsync_WhenDateIsNotFuture_ThrowsValidationException` | `CreateTurno_WhenDateIsNotFuture_Returns400BadRequest` |
-
-> Regla de oro: cada flujo del caso de uso debe tener al menos un test. En los flujos
-> resueltos en la Capa de Presentación (1a, 2a) el test aplicable es el de integración
-> HTTP, ya que el service no se invoca.
+Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.

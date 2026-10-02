@@ -28,11 +28,11 @@ servicio), verificando la disponibilidad del nuevo horario antes de actualizar e
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 200)
 1. El Actor envía una petición al endpoint `PUT /api/turnos/{id}` con los datos modificados
-   (JSON con `fecha`, `hora` y/o `idServicio`). *(El actor selecciona el turno y modifica la
+   (JSON con `fechaHora` y `servicioId`). *(El actor selecciona el turno y modifica la
    fecha, hora o servicio.)*
-2. La **Capa de Presentación** (`TurnosController.UpdateTurno`) valida que el JSON sea
+2. La **Capa de Presentación** (`TurnosController.Update`) valida que el JSON sea
    estructuralmente correcto y obtiene la identidad y el rol del actor autenticado.
-3. La **Capa de Negocio** (`TurnoService.UpdateTurnoAsync`) verifica la existencia y
+3. La **Capa de Negocio** (`TurnoService.UpdateAsync`) verifica la existencia y
    pertenencia del turno, su estado, el servicio, la fecha futura y la disponibilidad del
    nuevo horario, excluyendo el propio turno.
 4. La **Capa de Persistencia** actualiza los datos del registro en la tabla `Turnos`.
@@ -90,7 +90,8 @@ servicio), verificando la disponibilidad del nuevo horario antes de actualizar e
 
 ### 5. SUB-VARIACIONES (opcional)
 1. El actor puede modificar solo la fecha, solo la hora, solo el servicio, o una
-   combinación de ellos en una única petición.
+   combinación de ellos en una única petición. El PUT siempre envía `fechaHora` y
+   `servicioId`, conservando el valor anterior del campo que no se modifica.
 2. En todas las variantes el resultado (`200 OK`) es idéntico y el turno queda actualizado.
 
 ### 6. POSTCONDICIONES
@@ -122,17 +123,6 @@ servicio), verificando la disponibilidad del nuevo horario antes de actualizar e
   (`HorarioNoDisponibleException` → 409) y existencia del turno (`TurnoNotFoundException`
   → 404). El negocio actúa como *defensa en profundidad*.
 
-### Matriz de trazabilidad CU-04 → Test
+### Matriz de trazabilidad
 
-| Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
-| --- | --- | --- | --- |
-| Flujo principal | `200 OK` | `UpdateTurnoAsync_UpdatesAndReturnsUpdatedTurno` | `UpdateTurno_ReturnsSuccessAndUpdatedTurno` |
-| 1a. JSON inválido | `400 Bad Request` | — (model binding) | `UpdateTurno_WithInvalidJson_Returns400BadRequest` |
-| 2a. Turno inexistente | `404 Not Found` | `UpdateTurnoAsync_WhenNonExistentTurno_ThrowsTurnoNotFoundException` | `UpdateTurno_WhenNonExistentTurno_Returns404NotFound` |
-| 3a. Cliente sin permiso | `403 Forbidden` | `UpdateTurnoAsync_WhenTurnoBelongsToAnotherClient_ThrowsForbiddenException` | `UpdateTurno_WhenTurnoBelongsToAnotherClient_Returns403Forbidden` |
-| 3b. Turno no activo / vencido | `409 Conflict` | `UpdateTurnoAsync_WhenTurnoNoModificable_ThrowsTurnoNoModificableException` | `UpdateTurno_WhenTurnoNoModificable_Returns409Conflict` |
-| 3c. Nuevo horario ocupado | `409 Conflict` | `UpdateTurnoAsync_WhenOverlappingSchedule_ThrowsHorarioNoDisponibleException` | `UpdateTurno_WhenOverlappingSchedule_Returns409Conflict` |
-| 3d. Servicio inexistente | `404 Not Found` | `UpdateTurnoAsync_WhenNonExistentServicio_ThrowsServicioNotFoundException` | `UpdateTurno_WhenNonExistentServicio_Returns404NotFound` |
-| 3e. Fecha pasada | `400 Bad Request` | `UpdateTurnoAsync_WhenDateIsNotFuture_ThrowsValidationException` | `UpdateTurno_WhenDateIsNotFuture_Returns400BadRequest` |
-
-> Regla de oro: cada flujo del caso de uso debe tener al menos un test.
+Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.

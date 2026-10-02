@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TurnosLavadero.DataAccess.Entities;
 
 namespace TurnosLavadero.DataAccess.Context;
@@ -15,6 +16,16 @@ public sealed class LavaderoDbContext(DbContextOptions<LavaderoDbContext> option
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // SQLite puede filtrar y ordenar DateTime, pero no DateTimeOffset.
+        // Todas las fechas se persisten en UTC conservando la precisión.
+        var utcConverter = new ValueConverter<DateTimeOffset, DateTime>(
+            value => value.UtcDateTime,
+            value => new DateTimeOffset(DateTime.SpecifyKind(value, DateTimeKind.Utc)));
+        modelBuilder.Entity<Turno>().Property(x => x.FechaHora).HasConversion(utcConverter);
+        modelBuilder.Entity<Turno>().Property(x => x.FechaCreacion).HasConversion(utcConverter);
+        modelBuilder.Entity<Recordatorio>().Property(x => x.FechaProgramada).HasConversion(utcConverter);
+        modelBuilder.Entity<Recordatorio>().Property(x => x.FechaProcesada).HasConversion(utcConverter);
 
         modelBuilder.Entity<Cliente>(entity =>
         {

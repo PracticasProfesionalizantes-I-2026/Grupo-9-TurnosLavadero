@@ -59,6 +59,9 @@ Nunca confiar en un `ClienteId` enviado por un cliente: comparar siempre con el 
 - Solo los turnos confirmados y futuros se modifican o cancelan.
 - Un servicio con turnos relacionados no se elimina.
 - Los recordatorios respetan la preferencia de notificación y no se procesan dos veces.
+- `RecordatorioService` autoriza el acceso HTTP; el worker usa `IRecordatorioProcessor` internamente.
+- El transporte real usa SMTP; las pruebas sustituyen el sender y no envían mensajes externos.
+- Mantener la conversión de fechas a DateTime UTC para permitir consultas SQL en SQLite.
 - La base se migra e inicializa al arrancar mediante `DbInitializer`.
 
 ## Criterio de finalización

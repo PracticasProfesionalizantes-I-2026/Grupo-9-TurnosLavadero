@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using TurnosLavadero.Shared.Validation;
 
 namespace TurnosLavadero.Shared.DTOs.Turnos;
 
 public sealed class TurnoUpdateDTO
 {
-    [Required]
+    [Required, NotDefault]
     public Guid ServicioId { get; init; }
 
-    [Required]
+    [Required, NotDefault]
     public DateTimeOffset FechaHora { get; init; }
 }

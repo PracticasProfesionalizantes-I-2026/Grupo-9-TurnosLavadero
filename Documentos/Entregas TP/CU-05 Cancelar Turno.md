@@ -28,9 +28,9 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 204)
 1. El actor selecciona el turno y confirma la operación en la interfaz.
-2. La interfaz envía `PATCH /api/turnos/{id}/cancelacion` una sola vez confirmada la acción.
+2. La interfaz envía `DELETE /api/turnos/{id}` una sola vez confirmada la acción.
 3. La **Capa de Presentación** obtiene la identidad y el rol del actor autenticado.
-4. La **Capa de Negocio** (`TurnoService.CancelTurnoAsync`) verifica la existencia,
+4. La **Capa de Negocio** (`TurnoService.CancelAsync`) verifica la existencia,
    pertenencia, estado y fecha del turno (RN-10 y RN-06).
 5. La **Capa de Persistencia** actualiza el estado del turno a "Cancelado". No elimina el
    registro porque debe conservarse su historial.
@@ -92,13 +92,6 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
   (`TurnoNoCancelableException` → 409) y existencia del turno
   (`TurnoNotFoundException` → 404).
 
-### Matriz de trazabilidad CU-05 → Test
+### Matriz de trazabilidad
 
-| Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
-| --- | --- | --- | --- |
-| Flujo principal | `204 No Content` | `CancelTurnoAsync_CancelsTurno` | `CancelTurno_Returns204NoContent` |
-| 4a. Turno inexistente | `404 Not Found` | `CancelTurnoAsync_WhenNonExistentTurno_ThrowsTurnoNotFoundException` | `CancelTurno_WhenNonExistentTurno_Returns404NotFound` |
-| 4b. Cliente sin permiso | `403 Forbidden` | `CancelTurnoAsync_WhenTurnoBelongsToAnotherClient_ThrowsForbiddenException` | `CancelTurno_WhenTurnoBelongsToAnotherClient_Returns403Forbidden` |
-| 4c. Turno vencido / no cancelable | `409 Conflict` | `CancelTurnoAsync_WhenTurnoVencido_ThrowsTurnoNoCancelableException` | `CancelTurno_WhenTurnoVencido_Returns409Conflict` |
-
-> Regla de oro: cada flujo del caso de uso debe tener al menos un test.
+Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.

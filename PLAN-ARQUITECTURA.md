@@ -221,7 +221,7 @@ Cada controller tendrá bloques `try/catch` explícitos para las excepciones que
 
 | Método y ruta | Roles | Resultado principal |
 | --- | --- | --- |
-| `GET /api/turnos/disponibilidad?fecha=` | Usuario autenticado | Informa horarios disponibles. `200`. |
+| `GET /api/turnos/disponibilidad?fechaHora=` | Usuario autenticado | Indica si un instante futuro está disponible. `200`. |
 | `GET /api/turnos/mios` | Cliente | Lista exclusivamente sus turnos. `200`. |
 | `GET /api/turnos?fecha=` | Empleado, Administrador | Devuelve la agenda diaria. `200`. |
 | `POST /api/turnos` | Cliente, Empleado, Administrador | Crea un turno según el rol. `201`. |
@@ -274,3 +274,22 @@ Las variables de entorno almacenarán la URL base y los JWT de prueba; no se ver
 4. **Cierre automático:** `README.md`, `AGENTS.md`, árbol final, catálogo de endpoints y verificación con `dotnet build` y `dotnet test`.
 
 No se generará código hasta recibir la aprobación de este plan.
+
+## Actualización de recordatorios y fechas
+
+`RecordatorioService` autoriza la ejecución HTTP manual del administrador;
+`RecordatorioProcessor` concentra las reglas comunes y recibe repositorios por inyección.
+`RecordatorioWorker` resuelve el procesador en un scope nuevo por ejecución periódica.
+`SmtpNotificationSender` envía correo mediante SMTP configurable. La configuración inicial
+deshabilita el worker hasta configurar una cuenta SMTP. El acceso HTTP no permite invocar
+directamente el procesador interno.
+
+Un semáforo compartido serializa los lotes manuales y automáticos dentro de una instancia.
+La implementación está prevista para una sola instancia de la API; no garantiza entrega
+exactamente una vez ante una caída entre envío y persistencia.
+
+Las fechas del dominio siguen siendo DateTimeOffset, pero EF Core las convierte a DateTime
+UTC en SQLite para permitir filtros y ordenación en SQL. La migración NormalizeUtcDates
+normaliza la representación de fechas UTC existentes sin perder su precisión.
+
+La especificación funcional se amplía a CU-07 a CU-13; consultar el índice de la entrega.

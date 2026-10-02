@@ -32,11 +32,11 @@ disponibilidad, registre el turno y confirme la creación.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 201)
 1. El Actor envía una petición al endpoint `POST /api/turnos` con los datos del turno (JSON
-   con `idCliente`, `idServicio`, `fecha`, `hora`). *(El empleado selecciona "Crear turno" y
+   con `clienteId`, `servicioId`, `fechaHora`). *(El empleado selecciona "Crear turno" y
    busca al cliente.)*
-2. La **Capa de Presentación** (`TurnosController.CreateTurno`) valida que el JSON sea
+2. La **Capa de Presentación** (`TurnosController.Create`) valida que el JSON sea
    estructuralmente correcto y que los campos requeridos estén presentes y no vacíos.
-3. La **Capa de Negocio** (`TurnoService.CreateTurnoAsync`) verifica que el cliente exista,
+3. La **Capa de Negocio** (`TurnoService.CreateAsync`) verifica que el cliente exista,
    que el servicio esté activo, que la fecha sea futura y que el horario esté libre
    (RN-03, RN-02, RN-11 y RN-01).
 4. La **Capa de Persistencia** genera un nuevo `Id` (GUID) y guarda el registro en la tabla
@@ -53,14 +53,14 @@ disponibilidad, registre el turno y confirme la creación.
   3. El Sistema devuelve un código **400 Bad Request**. Fin del caso de uso.
 
 * **2a. Dato obligatorio faltante (HTTP 400 Bad Request):**
-  1. Si en el Paso 2 el JSON no incluye `idCliente`, `idServicio`, `fecha` u `hora`.
-  2. El Sistema (Capa de Presentación) rechaza la petición por error de validación
-     (`ModelState.IsValid == false`).
+  1. Si en el Paso 2 el JSON no incluye `clienteId`, `servicioId`, `fechaHora`.
+  2. Presentación valida `servicioId` y `fechaHora`. Negocio exige `clienteId` para
+     Empleado o Administrador y lanza `ValidationException` si falta.
   3. El Sistema devuelve un código **400 Bad Request** detallando el campo faltante. Fin del
      caso de uso.
 
 * **3a. Cliente inexistente (HTTP 404 Not Found):**
-  1. Si en el Paso 3 el `idCliente` enviado no existe en los registros, violando la **RN-03**.
+  1. Si en el Paso 3 el `clienteId` enviado no existe en los registros, violando la **RN-03**.
      *(Derivado del FA1: el cliente no existe.)*
   2. La **Capa de Negocio** no encuentra la entidad y lanza `ClienteNotFoundException`.
   3. El Sistema devuelve un código **404 Not Found**. (Alternativa operativa: el sistema
@@ -123,18 +123,6 @@ disponibilidad, registre el turno y confirme la creación.
   (`ClienteNotFoundException` → 404) y RN-01 disponibilidad del horario
   (`HorarioNoDisponibleException` → 409). El negocio funciona como *defensa en profundidad*.
 
-### Matriz de trazabilidad CU-03 → Test
+### Matriz de trazabilidad
 
-| Paso del CU | Excepción / Código | Test unitario (BusinessLogic) | Test integración (HTTP) |
-| --- | --- | --- | --- |
-| Flujo principal | `201 Created` | `CreateTurnoAsync_SavesAndReturnsCreatedTurno` | `CreateTurno_ReturnsSuccessAndCreatedTurno` |
-| 1a. JSON inválido | `400 Bad Request` | — (model binding) | `CreateTurno_WithInvalidJson_Returns400BadRequest` |
-| 2a. Dato obligatorio faltante | `400 Bad Request` | — (se detecta vía `[Required]`) | `CreateTurno_WithMissingRequiredField_Returns400BadRequest` |
-| 3a. Cliente inexistente | `404 Not Found` | `CreateTurnoAsync_WhenNonExistentCliente_ThrowsClienteNotFoundException` | `CreateTurno_WhenNonExistentCliente_Returns404NotFound` |
-| 3b. Horario ocupado | `409 Conflict` | `CreateTurnoAsync_WhenOverlappingSchedule_ThrowsHorarioNoDisponibleException` | `CreateTurno_WhenOverlappingSchedule_Returns409Conflict` |
-| 3c. Servicio inexistente | `404 Not Found` | `CreateTurnoAsync_WhenNonExistentServicio_ThrowsServicioNotFoundException` | `CreateTurno_WhenNonExistentServicio_Returns404NotFound` |
-| 3d. Fecha pasada | `400 Bad Request` | `CreateTurnoAsync_WhenDateIsNotFuture_ThrowsValidationException` | `CreateTurno_WhenDateIsNotFuture_Returns400BadRequest` |
-
-> Regla de oro: cada flujo del caso de uso debe tener al menos un test. En los flujos
-> resueltos en la Capa de Presentación (1a, 2a) el test aplicable es el de integración
-> HTTP, ya que el service no se invoca.
+Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
