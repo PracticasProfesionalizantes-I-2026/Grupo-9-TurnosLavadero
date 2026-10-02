@@ -16,12 +16,10 @@ El sistema permite que los clientes soliciten, consulten, modifiquen y cancelen 
 - Tomás Martín Ponce
 - Juan Jesús Baigorria
 
-## 📄 Documentación
+### 📑 Documentación
 
-### 📑 Documentación original del grupo
-
-- [Abrir la documentación compartida en Google Docs](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing)
-- [Documento Word original: actores y casos de uso](Documentos/Entregas%20TP/Lista%20Casos%20de%20Usos.docx)
+- [Documentación.](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing)
+- [Lista casos de uso y especificación.](https://docs.google.com/document/d/1MkV_uMX8hXCThScrN0nHFhvpB_b_CHhNB7d-tU8ST1Y/edit?usp=sharing).
 
 ### 📑 Alcance y reglas de negocio
 
