@@ -45,9 +45,3 @@ Especificaciones de los flujos principales y alternativos de cada operación.
 - **Autenticación:** JWT con roles Cliente, Empleado y Administrador.
 - **Pruebas manuales:** colección [Bruno](bruno/).
 - **Documentación interactiva local:** Scalar en `http://localhost:5088/scalar/v1` al ejecutar la API en desarrollo.
-
-## 🚧 Estado del proyecto
-
-**Estado actual:** API desarrollada, casos de uso documentados y pruebas automatizadas incluidas.
-
-Los recordatorios cuentan con procesamiento periódico y envío por SMTP. Para activarlos se debe configurar una cuenta de correo siguiendo la guía. El repositorio contiene un mockup; todavía no incluye una interfaz web para usuarios finales.
