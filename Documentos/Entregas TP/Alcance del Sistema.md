@@ -1,5 +1,7 @@
 # Alcance del Sistema de Turnos para Lavadero
 
+[Documentación original compartida del grupo](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing) · [Documento Word original](Lista%20Casos%20de%20Usos.docx)
+
 ## Objetivo
 
 El sistema administra los clientes, los servicios ofrecidos por el lavadero y los turnos. Permite que un cliente solicite, consulte, modifique o cancele sus propios turnos, y que el personal gestione la agenda de atención.

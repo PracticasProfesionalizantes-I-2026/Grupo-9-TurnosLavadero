@@ -18,13 +18,17 @@ El sistema permite que los clientes soliciten, consulten, modifiquen y cancelen 
 
 ## 📄 Documentación
 
+### 📑 Documentación original del grupo
+
+- [Abrir la documentación compartida en Google Docs](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing)
+- [Documento Word original: actores y casos de uso](Documentos/Entregas%20TP/Lista%20Casos%20de%20Usos.docx)
+
 ### 📑 Alcance y reglas de negocio
 
 Definen el objetivo del sistema, los actores, permisos y restricciones de las operaciones.
 
 - [Alcance del sistema](Documentos/Entregas%20TP/Alcance%20del%20Sistema.md)
 - [Reglas de negocio](Documentos/Entregas%20TP/Reglas%20de%20Negocio.md)
-- [Documento compartido](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing)
 
 ### 👤 Actores y casos de uso
 
