@@ -1,5 +1,9 @@
 # Actores y casos de uso
 
+[Documentación original compartida del grupo](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing) · [Documento Word original](Lista%20Casos%20de%20Usos.docx)
+
+El Word conserva el trabajo previo del grupo sobre CU-01 a CU-06. Los casos CU-07 a CU-13 amplían esa documentación en archivos separados. Las especificaciones Markdown incluyen las correcciones técnicas necesarias para coincidir con la API y la trazabilidad de las pruebas actuales.
+
 Los permisos de Cliente, Empleado, Administrador y Proceso programado están definidos en [Alcance del Sistema](Alcance%20del%20Sistema.md).
 
 | ID | Caso de uso | Actor |
