@@ -26,4 +26,4 @@ Como soporte se implementan login, consulta de servicios, disponibilidad, turnos
 
 ## Evidencia ejecutable
 
-`python scripts/demo.py` levanta una base temporal, usa autenticación real y captura un correo en SMTP local. Verifica respuestas y genera `TestResults/demo/demo.html` y `resultados.json`. No contiene credenciales reales ni envía a casillas externas. La CI ejecuta compilación, pruebas y demo, y conserva los resultados como artefactos.
+`dotnet run --project tools/DemoRunner --` levanta una base temporal, usa autenticación real y captura un correo en SMTP local. Verifica respuestas y genera `TestResults/demo/demo.html` y `resultados.json`. No contiene credenciales reales ni envía a casillas externas. La CI ejecuta compilación, pruebas y demo, y conserva los resultados como artefactos.

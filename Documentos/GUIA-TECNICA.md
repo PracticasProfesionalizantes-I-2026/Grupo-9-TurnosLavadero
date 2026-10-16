@@ -204,3 +204,7 @@ Abrir la carpeta `bruno/` como colección y seleccionar el ambiente `Local`. La 
 - [Plan de arquitectura](../PLAN-ARQUITECTURA.md)
 - [Documento compartido](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing)
 - [Mockup en Excalidraw](https://excalidraw.com/#room=4c555b22d46d1dd52a49,qfMk6W81Y5vJPTPZ82flhQ)
+
+## Demo automática en C#
+
+El proyecto auxiliar `tools/DemoRunner` es una aplicación de consola .NET 10 escrita en C#. Usa HttpClient, System.Text.Json y TcpListener de la biblioteca estándar. No agrega paquetes ni requiere otro intérprete. Después de compilar la solución: `dotnet run --no-build --project tools/DemoRunner -- --output TestResults/demo`.

@@ -5,4 +5,5 @@
   <Project Path="API/API.csproj" />
   <Project Path="Tests/UnitTests/UnitTests.csproj" />
   <Project Path="Tests/IntegrationTests/IntegrationTests.csproj" />
+  <Project Path="tools/DemoRunner/DemoRunner.csproj" />
 </Solution>

@@ -51,6 +51,8 @@ Definen el objetivo del sistema, los actores, permisos y restricciones de las op
 - [Presentación PowerPoint](Documentos/Presentacion/TurnosLavadero-Grupo9.pptx)
 - [Guion de exposición](Documentos/Presentacion/GUION.md)
 
-La demo automática se ejecuta con `python scripts/demo.py` después de compilar. Usa JWT reales, SQLite temporal y SMTP local. La carpeta Bruno `00 Demo` permite mostrar cinco casos de uso en orden sin copiar IDs a mano.
+La demo automática se ejecuta con `dotnet run --project tools/DemoRunner --` después de compilar. Usa JWT reales, SQLite temporal y SMTP local. La carpeta Bruno `00 Demo` permite mostrar cinco casos de uso en orden sin copiar IDs a mano.
 
 Verificación de esta entrega: **78 pruebas aprobadas** y **17 respuestas HTTP verificadas**. [Resultados y límites](Documentos/Presentacion/Evidencia/README.md).
+
+La API, las pruebas automatizadas y la demo de consola están implementadas en **C# con .NET 10**.

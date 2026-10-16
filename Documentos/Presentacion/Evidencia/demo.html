@@ -1,135 +1,132 @@
-<!doctype html><html lang="es"><meta charset="utf-8"><title>Demo verificada del lavadero</title>
+<!doctype html><html lang="es"><meta charset="utf-8"><title>Demo C# verificada del lavadero</title>
 <style>body{font:17px system-ui;margin:40px auto;max-width:1100px;padding:0 24px;color:#172b3a;background:#f4f7fa}
 h1{font-size:36px}section{background:white;padding:20px;margin:20px 0;border-left:5px solid #008c80}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}b{color:#007365}</style>
-<h1>Sistema de turnos para lavadero</h1><p>Grupo 9 · Juan Jesús Baigorria y Tomás Martín Ponce</p>
-<p>Ejecución: 2026-10-16T21:06:46.085416+00:00 · 17 peticiones verificadas · JWT real · SQLite temporal</p>
-<p>El correo se capturó en un servidor SMTP local. Esta evidencia no acredita entrega a una casilla externa.</p>
-<section><h2>CU-08 Inicio de sesión administrador</h2><p><b>200</b> POST /api/auth/login</p><pre>{
+<h1>Sistema de turnos para lavadero</h1><p>Grupo 9 · Juan Jesús Baigorria y Tomás Martín Ponce</p><p>Demo escrita en C# / .NET 10. Ejecución: 2026-10-16T21:36:07.3096135+00:00. 17 peticiones verificadas con JWT real y SQLite temporal.</p><p>El correo se capturó en SMTP local. Esta evidencia no acredita entrega a una casilla externa.</p><section><h2>CU-08 Inicio de sesi&#243;n administrador</h2><p><b>200</b> POST /api/auth/login</p><pre>{
   &quot;token&quot;: &quot;[omitido]&quot;,
-  &quot;expiraEn&quot;: &quot;2026-10-16T23:06:45.0555767+00:00&quot;,
-  &quot;usuarioId&quot;: &quot;61fc827d-7e57-4cbe-9924-3675f7c7cb03&quot;,
+  &quot;expiraEn&quot;: &quot;2026-10-16T23:36:06.5335493\u002B00:00&quot;,
+  &quot;usuarioId&quot;: &quot;15893377-8f77-4fc4-ae19-35d63dd07e8f&quot;,
   &quot;clienteId&quot;: null,
   &quot;email&quot;: &quot;admin@lavadero.local&quot;,
   &quot;rol&quot;: &quot;Administrador&quot;
 }</pre></section><section><h2>CU-06 Alta de servicio</h2><p><b>201</b> POST /api/servicios</p><pre>{
-  &quot;id&quot;: &quot;138ec1fb-4a05-43b6-9d6d-193d9bb0ee99&quot;,
-  &quot;nombre&quot;: &quot;Lavado demostración&quot;,
+  &quot;id&quot;: &quot;c0251b15-e074-4cf6-a6c1-9e8777513ccd&quot;,
+  &quot;nombre&quot;: &quot;Lavado demostraci\u00F3n&quot;,
   &quot;importe&quot;: 12000,
   &quot;activo&quot;: true
 }</pre></section><section><h2>CU-07 Registro de cliente</h2><p><b>201</b> POST /api/auth/registro</p><pre>{
   &quot;token&quot;: &quot;[omitido]&quot;,
-  &quot;expiraEn&quot;: &quot;2026-10-16T23:06:45.3170501+00:00&quot;,
-  &quot;usuarioId&quot;: &quot;cec3dc56-34e1-4815-a71c-83bc063ad359&quot;,
-  &quot;clienteId&quot;: &quot;2f70d0fd-80ad-4473-8527-caf16545851b&quot;,
+  &quot;expiraEn&quot;: &quot;2026-10-16T23:36:06.7974844\u002B00:00&quot;,
+  &quot;usuarioId&quot;: &quot;388fa626-9090-497e-beee-8d058e376a01&quot;,
+  &quot;clienteId&quot;: &quot;88961e25-f64f-488c-85a3-830254413fff&quot;,
   &quot;email&quot;: &quot;cliente.demo@example.test&quot;,
   &quot;rol&quot;: &quot;Cliente&quot;
-}</pre></section><section><h2>RNF-01 Acceso sin token</h2><p><b>401</b> GET /api/servicios</p><pre>null</pre></section><section><h2>CU-13 Consulta de servicios</h2><p><b>200</b> GET /api/servicios</p><pre>[
+}</pre></section><section><h2>RNF-01 Acceso sin token</h2><p><b>401</b> GET /api/servicios</p><pre>Sin cuerpo</pre></section><section><h2>CU-13 Consulta de servicios</h2><p><b>200</b> GET /api/servicios</p><pre>[
   {
-    &quot;id&quot;: &quot;ce92263b-c8ed-4495-9c61-a1a6e8c41028&quot;,
+    &quot;id&quot;: &quot;36c1b7ca-7ddd-4e30-ae59-d2ffe2ba6c21&quot;,
     &quot;nombre&quot;: &quot;Lavado completo&quot;,
     &quot;importe&quot;: 15000.0,
     &quot;activo&quot;: true
   },
   {
-    &quot;id&quot;: &quot;138ec1fb-4a05-43b6-9d6d-193d9bb0ee99&quot;,
-    &quot;nombre&quot;: &quot;Lavado demostración&quot;,
+    &quot;id&quot;: &quot;c0251b15-e074-4cf6-a6c1-9e8777513ccd&quot;,
+    &quot;nombre&quot;: &quot;Lavado demostraci\u00F3n&quot;,
     &quot;importe&quot;: 12000.0,
     &quot;activo&quot;: true
   },
   {
-    &quot;id&quot;: &quot;3689ad0e-294b-41d1-aed9-62ee599d0fca&quot;,
+    &quot;id&quot;: &quot;ad884867-e720-4522-a23b-ef0d91040def&quot;,
     &quot;nombre&quot;: &quot;Lavado exterior&quot;,
     &quot;importe&quot;: 8000.0,
     &quot;activo&quot;: true
   }
 ]</pre></section><section><h2>CU-01 Reserva del cliente autenticado</h2><p><b>201</b> POST /api/turnos</p><pre>{
-  &quot;id&quot;: &quot;a1613081-679c-48e5-ad49-1e336afdf95d&quot;,
-  &quot;clienteId&quot;: &quot;2f70d0fd-80ad-4473-8527-caf16545851b&quot;,
-  &quot;cliente&quot;: &quot;Cliente Demostración&quot;,
-  &quot;servicioId&quot;: &quot;138ec1fb-4a05-43b6-9d6d-193d9bb0ee99&quot;,
-  &quot;servicio&quot;: &quot;Lavado demostración&quot;,
+  &quot;id&quot;: &quot;20dc248e-29c4-4f75-be01-49299b0d8910&quot;,
+  &quot;clienteId&quot;: &quot;88961e25-f64f-488c-85a3-830254413fff&quot;,
+  &quot;cliente&quot;: &quot;Cliente Demostraci\u00F3n&quot;,
+  &quot;servicioId&quot;: &quot;c0251b15-e074-4cf6-a6c1-9e8777513ccd&quot;,
+  &quot;servicio&quot;: &quot;Lavado demostraci\u00F3n&quot;,
   &quot;importe&quot;: 12000.0,
-  &quot;fechaHora&quot;: &quot;2026-10-23T21:06:45+00:00&quot;,
+  &quot;fechaHora&quot;: &quot;2026-10-23T21:36:06.8266947\u002B00:00&quot;,
   &quot;estado&quot;: &quot;Confirmado&quot;,
-  &quot;fechaCreacion&quot;: &quot;2026-10-16T21:06:45.3669325+00:00&quot;
+  &quot;fechaCreacion&quot;: &quot;2026-10-16T21:36:06.8840938\u002B00:00&quot;
 }</pre></section><section><h2>RN-01 Horario ocupado</h2><p><b>409</b> POST /api/turnos</p><pre>{
   &quot;type&quot;: &quot;https://tools.ietf.org/html/rfc9110#section-15.5.10&quot;,
   &quot;title&quot;: &quot;Conflict&quot;,
   &quot;status&quot;: 409,
   &quot;detail&quot;: &quot;El horario seleccionado ya no se encuentra disponible.&quot;,
-  &quot;traceId&quot;: &quot;00-591e7b15188d9710c1b3eda5e5f451c7-052b95d11723c4e0-00&quot;
+  &quot;traceId&quot;: &quot;00-d8098747846e89d5ac761509e3d7305e-d2e29fa97adb581e-00&quot;
 }</pre></section><section><h2>Registro de segundo cliente</h2><p><b>201</b> POST /api/auth/registro</p><pre>{
   &quot;token&quot;: &quot;[omitido]&quot;,
-  &quot;expiraEn&quot;: &quot;2026-10-16T23:06:45.4671901+00:00&quot;,
-  &quot;usuarioId&quot;: &quot;bc189c98-6753-443a-870a-003a32a06fd6&quot;,
-  &quot;clienteId&quot;: &quot;2a83c26d-94fd-4d69-974d-e273c1b82be9&quot;,
+  &quot;expiraEn&quot;: &quot;2026-10-16T23:36:07.0086886\u002B00:00&quot;,
+  &quot;usuarioId&quot;: &quot;314171a2-177a-459d-a1fc-fd39bac4f398&quot;,
+  &quot;clienteId&quot;: &quot;c571f958-f8a9-4f00-8497-7ac22cafe1d9&quot;,
   &quot;email&quot;: &quot;otro.demo@example.test&quot;,
   &quot;rol&quot;: &quot;Cliente&quot;
-}</pre></section><section><h2>RNF-02 Rechazo de modificación ajena</h2><p><b>403</b> PUT /api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d</p><pre>{
+}</pre></section><section><h2>RNF-02 Rechazo de modificaci&#243;n ajena</h2><p><b>403</b> PUT /api/turnos/20dc248e-29c4-4f75-be01-49299b0d8910</p><pre>{
   &quot;type&quot;: &quot;https://tools.ietf.org/html/rfc9110#section-15.5.4&quot;,
   &quot;title&quot;: &quot;Forbidden&quot;,
   &quot;status&quot;: 403,
   &quot;detail&quot;: &quot;El cliente solo puede operar sobre sus propios turnos.&quot;,
-  &quot;traceId&quot;: &quot;00-e3ac0da151ac32b22fb0710b71c64aaf-20939e61ef9e3e35-00&quot;
-}</pre></section><section><h2>CU-04 Modificación por el titular</h2><p><b>200</b> PUT /api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d</p><pre>{
-  &quot;id&quot;: &quot;a1613081-679c-48e5-ad49-1e336afdf95d&quot;,
-  &quot;clienteId&quot;: &quot;2f70d0fd-80ad-4473-8527-caf16545851b&quot;,
-  &quot;cliente&quot;: &quot;Cliente Demostración&quot;,
-  &quot;servicioId&quot;: &quot;138ec1fb-4a05-43b6-9d6d-193d9bb0ee99&quot;,
-  &quot;servicio&quot;: &quot;Lavado demostración&quot;,
+  &quot;traceId&quot;: &quot;00-63f3c984043605ead3fcc98fd49b46aa-7f0c0661e34c2c69-00&quot;
+}</pre></section><section><h2>CU-04 Modificaci&#243;n por el titular</h2><p><b>200</b> PUT /api/turnos/20dc248e-29c4-4f75-be01-49299b0d8910</p><pre>{
+  &quot;id&quot;: &quot;20dc248e-29c4-4f75-be01-49299b0d8910&quot;,
+  &quot;clienteId&quot;: &quot;88961e25-f64f-488c-85a3-830254413fff&quot;,
+  &quot;cliente&quot;: &quot;Cliente Demostraci\u00F3n&quot;,
+  &quot;servicioId&quot;: &quot;c0251b15-e074-4cf6-a6c1-9e8777513ccd&quot;,
+  &quot;servicio&quot;: &quot;Lavado demostraci\u00F3n&quot;,
   &quot;importe&quot;: 12000.0,
-  &quot;fechaHora&quot;: &quot;2026-10-23T22:06:45+00:00&quot;,
+  &quot;fechaHora&quot;: &quot;2026-10-23T22:36:06.8266947\u002B00:00&quot;,
   &quot;estado&quot;: &quot;Confirmado&quot;,
-  &quot;fechaCreacion&quot;: &quot;2026-10-16T21:06:45.3669325+00:00&quot;
-}</pre></section><section><h2>CU-11 Agenda del día argentino</h2><p><b>200</b> GET /api/turnos/agenda?fecha=2026-10-23</p><pre>[
+  &quot;fechaCreacion&quot;: &quot;2026-10-16T21:36:06.8840938\u002B00:00&quot;
+}</pre></section><section><h2>CU-11 Agenda del d&#237;a argentino</h2><p><b>200</b> GET /api/turnos/agenda?fecha=2026-10-23</p><pre>[
   {
-    &quot;id&quot;: &quot;a1613081-679c-48e5-ad49-1e336afdf95d&quot;,
-    &quot;clienteId&quot;: &quot;2f70d0fd-80ad-4473-8527-caf16545851b&quot;,
-    &quot;cliente&quot;: &quot;Cliente Demostración&quot;,
-    &quot;servicioId&quot;: &quot;138ec1fb-4a05-43b6-9d6d-193d9bb0ee99&quot;,
-    &quot;servicio&quot;: &quot;Lavado demostración&quot;,
+    &quot;id&quot;: &quot;20dc248e-29c4-4f75-be01-49299b0d8910&quot;,
+    &quot;clienteId&quot;: &quot;88961e25-f64f-488c-85a3-830254413fff&quot;,
+    &quot;cliente&quot;: &quot;Cliente Demostraci\u00F3n&quot;,
+    &quot;servicioId&quot;: &quot;c0251b15-e074-4cf6-a6c1-9e8777513ccd&quot;,
+    &quot;servicio&quot;: &quot;Lavado demostraci\u00F3n&quot;,
     &quot;importe&quot;: 12000.0,
-    &quot;fechaHora&quot;: &quot;2026-10-23T22:06:45+00:00&quot;,
+    &quot;fechaHora&quot;: &quot;2026-10-23T22:36:06.8266947\u002B00:00&quot;,
     &quot;estado&quot;: &quot;Confirmado&quot;,
-    &quot;fechaCreacion&quot;: &quot;2026-10-16T21:06:45.3669325+00:00&quot;
+    &quot;fechaCreacion&quot;: &quot;2026-10-16T21:36:06.8840938\u002B00:00&quot;
   }
-]</pre></section><section><h2>CU-02 Recordatorio por SMTP local</h2><p><b>200</b> POST /api/recordatorios/procesar?desde=2026-10-23T21%3A06%3A45%2B00%3A00&amp;hasta=2026-10-23T23%3A06%3A45%2B00%3A00</p><pre>{
+]</pre></section><section><h2>CU-02 Recordatorio por SMTP local</h2><p><b>200</b> POST /api/recordatorios/procesar?desde=2026-10-23T21%3A36%3A06.8266947%2B00%3A00&amp;hasta=2026-10-23T23%3A36%3A06.8266947%2B00%3A00</p><pre>{
   &quot;procesados&quot;: 1,
   &quot;enviados&quot;: 1,
   &quot;fallidos&quot;: 0,
   &quot;omitidos&quot;: 0,
   &quot;resultados&quot;: [
     {
-      &quot;id&quot;: &quot;169be213-a2e2-413b-bdf7-faee47a8bb55&quot;,
-      &quot;turnoId&quot;: &quot;a1613081-679c-48e5-ad49-1e336afdf95d&quot;,
-      &quot;fechaProgramada&quot;: &quot;2026-10-22T22:06:45+00:00&quot;,
-      &quot;fechaProcesada&quot;: &quot;2026-10-16T21:06:45.5772494+00:00&quot;,
+      &quot;id&quot;: &quot;dcdaa68b-9892-45a5-8248-05b19efa672f&quot;,
+      &quot;turnoId&quot;: &quot;20dc248e-29c4-4f75-be01-49299b0d8910&quot;,
+      &quot;fechaProgramada&quot;: &quot;2026-10-22T22:36:06.8266947\u002B00:00&quot;,
+      &quot;fechaProcesada&quot;: &quot;2026-10-16T21:36:07.1140318\u002B00:00&quot;,
       &quot;estado&quot;: &quot;Enviado&quot;,
       &quot;detalle&quot;: &quot;Recordatorio enviado correctamente.&quot;
     }
   ]
-}</pre></section><section><h2>CU-02 Segundo procesamiento sin reenvío</h2><p><b>200</b> POST /api/recordatorios/procesar?desde=2026-10-23T21%3A06%3A45%2B00%3A00&amp;hasta=2026-10-23T23%3A06%3A45%2B00%3A00</p><pre>{
+}</pre></section><section><h2>CU-02 Segundo procesamiento sin reenv&#237;o</h2><p><b>200</b> POST /api/recordatorios/procesar?desde=2026-10-23T21%3A36%3A06.8266947%2B00%3A00&amp;hasta=2026-10-23T23%3A36%3A06.8266947%2B00%3A00</p><pre>{
   &quot;procesados&quot;: 0,
   &quot;enviados&quot;: 0,
   &quot;fallidos&quot;: 0,
   &quot;omitidos&quot;: 0,
   &quot;resultados&quot;: []
-}</pre></section><section><h2>CU-05 Cancelación del turno</h2><p><b>204</b> DELETE /api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d</p><pre>null</pre></section><section><h2>CU-09 Horario liberado</h2><p><b>200</b> GET /api/turnos/disponibilidad?fechaHora=2026-10-23T22%3A06%3A45%2B00%3A00</p><pre>{
+}</pre></section><section><h2>CU-05 Cancelaci&#243;n del turno</h2><p><b>204</b> DELETE /api/turnos/20dc248e-29c4-4f75-be01-49299b0d8910</p><pre>Sin cuerpo</pre></section><section><h2>CU-09 Horario liberado</h2><p><b>200</b> GET /api/turnos/disponibilidad?fechaHora=2026-10-23T22%3A36%3A06.8266947%2B00%3A00</p><pre>{
   &quot;disponible&quot;: true
 }</pre></section><section><h2>CU-10 Historial de turnos propios</h2><p><b>200</b> GET /api/turnos/mis-turnos</p><pre>[
   {
-    &quot;id&quot;: &quot;a1613081-679c-48e5-ad49-1e336afdf95d&quot;,
-    &quot;clienteId&quot;: &quot;2f70d0fd-80ad-4473-8527-caf16545851b&quot;,
-    &quot;cliente&quot;: &quot;Cliente Demostración&quot;,
-    &quot;servicioId&quot;: &quot;138ec1fb-4a05-43b6-9d6d-193d9bb0ee99&quot;,
-    &quot;servicio&quot;: &quot;Lavado demostración&quot;,
+    &quot;id&quot;: &quot;20dc248e-29c4-4f75-be01-49299b0d8910&quot;,
+    &quot;clienteId&quot;: &quot;88961e25-f64f-488c-85a3-830254413fff&quot;,
+    &quot;cliente&quot;: &quot;Cliente Demostraci\u00F3n&quot;,
+    &quot;servicioId&quot;: &quot;c0251b15-e074-4cf6-a6c1-9e8777513ccd&quot;,
+    &quot;servicio&quot;: &quot;Lavado demostraci\u00F3n&quot;,
     &quot;importe&quot;: 12000.0,
-    &quot;fechaHora&quot;: &quot;2026-10-23T22:06:45+00:00&quot;,
+    &quot;fechaHora&quot;: &quot;2026-10-23T22:36:06.8266947\u002B00:00&quot;,
     &quot;estado&quot;: &quot;Cancelado&quot;,
-    &quot;fechaCreacion&quot;: &quot;2026-10-16T21:06:45.3669325+00:00&quot;
+    &quot;fechaCreacion&quot;: &quot;2026-10-16T21:36:06.8840938\u002B00:00&quot;
   }
-]</pre></section><section><h2>Validación de datos incompletos</h2><p><b>400</b> POST /api/turnos</p><pre>{
+]</pre></section><section><h2>Validaci&#243;n de datos incompletos</h2><p><b>400</b> POST /api/turnos</p><pre>{
   &quot;type&quot;: &quot;https://tools.ietf.org/html/rfc9110#section-15.5.1&quot;,
   &quot;title&quot;: &quot;One or more validation errors occurred.&quot;,
   &quot;status&quot;: 400,
@@ -141,7 +138,18 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}b{color:#007365}<
       &quot;El campo ServicioId es obligatorio y no puede tener su valor predeterminado.&quot;
     ]
   },
-  &quot;traceId&quot;: &quot;00-899b8ae0434faac8a9d3ad64645dfb4b-48ee40e829132117-00&quot;
-}</pre></section><section><h2>Correo capturado</h2><pre>Recordatorio de tu turno en el lavadero
+  &quot;traceId&quot;: &quot;00-bc95a235d2b50e485dc27a6e51cbe185-b9a8622a506f931c-00&quot;
+}</pre></section><section><h2>Correo capturado</h2><pre>MIME-Version: 1.0
+From: demo@example.test
+To: cliente.demo@example.test
+Date: 17 Oct 2026 05:36:07 +0800
+Subject: Recordatorio de tu turno en el lavadero
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 
-Hola Cliente, recordá tu turno para Lavado demostración el 23/10/2026 a las 19:06 (hora argentina). Si necesitás cambiarlo o cancelarlo, ingresá al sistema.</pre></section></html>
+SG9sYSBDbGllbnRlLCByZWNvcmTDoSB0dSB0dXJubyBwYXJhIExhdmFkbyBkZW1vc3Ry
+YWNpw7NuIGVsIDIzLzEwLzIwMjYgYSBsYXMgMTk6MzYgKGhvcmEgYXJnZW50aW5hKS4g
+U2kgbmVjZXNpdMOhcyBjYW1iaWFybG8gbyBjYW5jZWxhcmxvLCBpbmdyZXPDoSBhbCBz
+aXN0ZW1hLg==
+
+</pre></section></html>
