@@ -2,13 +2,13 @@
 
 ## Recorrido automático
 
-Requisitos: SDK .NET 10 y Python 3.10 o posterior. Desde la raíz:
+Requisitos: SDK .NET 10. Desde la raíz:
 
 ```powershell
 dotnet restore TurnosLavadero.slnx
 dotnet build TurnosLavadero.slnx --no-restore
 dotnet test TurnosLavadero.slnx --no-build
-python scripts/demo.py
+dotnet run --project tools/DemoRunner --
 ```
 
 La demo crea y elimina su propia base temporal, levanta la API en un puerto libre y configura un receptor SMTP local. No modifica la base habitual ni requiere una cuenta de correo. Genera un HTML legible con las peticiones y respuestas y un JSON sin tokens ni contraseñas. Detiene la API al terminar. Para probar en vivo con Bruno usar el procedimiento siguiente.

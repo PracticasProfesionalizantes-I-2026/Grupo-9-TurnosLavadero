@@ -1,8 +1,9 @@
 {
-  "fechaUtc": "2026-10-16T21:06:46.085416+00:00",
+  "fechaUtc": "2026-10-16T21:36:07.3096135+00:00",
+  "implementacion": "C# / .NET 10",
   "pasos": [
     {
-      "paso": "CU-08 Inicio de sesión administrador",
+      "paso": "CU-08 Inicio de sesi\u00F3n administrador",
       "metodo": "POST",
       "ruta": "/api/auth/login",
       "esperado": 200,
@@ -14,8 +15,8 @@
       },
       "respuesta": {
         "token": "[omitido]",
-        "expiraEn": "2026-10-16T23:06:45.0555767+00:00",
-        "usuarioId": "61fc827d-7e57-4cbe-9924-3675f7c7cb03",
+        "expiraEn": "2026-10-16T23:36:06.5335493\u002B00:00",
+        "usuarioId": "15893377-8f77-4fc4-ae19-35d63dd07e8f",
         "clienteId": null,
         "email": "admin@lavadero.local",
         "rol": "Administrador"
@@ -29,12 +30,12 @@
       "obtenido": 201,
       "correcto": true,
       "peticion": {
-        "nombre": "Lavado demostración",
+        "nombre": "Lavado demostraci\u00F3n",
         "importe": 12000
       },
       "respuesta": {
-        "id": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "nombre": "Lavado demostración",
+        "id": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "nombre": "Lavado demostraci\u00F3n",
         "importe": 12000,
         "activo": true
       }
@@ -48,15 +49,15 @@
       "correcto": true,
       "peticion": {
         "nombre": "Cliente",
-        "apellido": "Demostración",
+        "apellido": "Demostraci\u00F3n",
         "email": "cliente.demo@example.test",
         "password": "[omitido]"
       },
       "respuesta": {
         "token": "[omitido]",
-        "expiraEn": "2026-10-16T23:06:45.3170501+00:00",
-        "usuarioId": "cec3dc56-34e1-4815-a71c-83bc063ad359",
-        "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
+        "expiraEn": "2026-10-16T23:36:06.7974844\u002B00:00",
+        "usuarioId": "388fa626-9090-497e-beee-8d058e376a01",
+        "clienteId": "88961e25-f64f-488c-85a3-830254413fff",
         "email": "cliente.demo@example.test",
         "rol": "Cliente"
       }
@@ -81,19 +82,19 @@
       "peticion": null,
       "respuesta": [
         {
-          "id": "ce92263b-c8ed-4495-9c61-a1a6e8c41028",
+          "id": "36c1b7ca-7ddd-4e30-ae59-d2ffe2ba6c21",
           "nombre": "Lavado completo",
           "importe": 15000.0,
           "activo": true
         },
         {
-          "id": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-          "nombre": "Lavado demostración",
+          "id": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+          "nombre": "Lavado demostraci\u00F3n",
           "importe": 12000.0,
           "activo": true
         },
         {
-          "id": "3689ad0e-294b-41d1-aed9-62ee599d0fca",
+          "id": "ad884867-e720-4522-a23b-ef0d91040def",
           "nombre": "Lavado exterior",
           "importe": 8000.0,
           "activo": true
@@ -108,19 +109,19 @@
       "obtenido": 201,
       "correcto": true,
       "peticion": {
-        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "fechaHora": "2026-10-23T21:06:45+00:00"
+        "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "fechaHora": "2026-10-23T21:36:06.8266947\u002B00:00"
       },
       "respuesta": {
-        "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
-        "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
-        "cliente": "Cliente Demostración",
-        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "servicio": "Lavado demostración",
+        "id": "20dc248e-29c4-4f75-be01-49299b0d8910",
+        "clienteId": "88961e25-f64f-488c-85a3-830254413fff",
+        "cliente": "Cliente Demostraci\u00F3n",
+        "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "servicio": "Lavado demostraci\u00F3n",
         "importe": 12000.0,
-        "fechaHora": "2026-10-23T21:06:45+00:00",
+        "fechaHora": "2026-10-23T21:36:06.8266947\u002B00:00",
         "estado": "Confirmado",
-        "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+        "fechaCreacion": "2026-10-16T21:36:06.8840938\u002B00:00"
       }
     },
     {
@@ -131,15 +132,15 @@
       "obtenido": 409,
       "correcto": true,
       "peticion": {
-        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "fechaHora": "2026-10-23T21:06:45+00:00"
+        "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "fechaHora": "2026-10-23T21:36:06.8266947\u002B00:00"
       },
       "respuesta": {
         "type": "https://tools.ietf.org/html/rfc9110#section-15.5.10",
         "title": "Conflict",
         "status": 409,
         "detail": "El horario seleccionado ya no se encuentra disponible.",
-        "traceId": "00-591e7b15188d9710c1b3eda5e5f451c7-052b95d11723c4e0-00"
+        "traceId": "00-d8098747846e89d5ac761509e3d7305e-d2e29fa97adb581e-00"
       }
     },
     {
@@ -157,57 +158,57 @@
       },
       "respuesta": {
         "token": "[omitido]",
-        "expiraEn": "2026-10-16T23:06:45.4671901+00:00",
-        "usuarioId": "bc189c98-6753-443a-870a-003a32a06fd6",
-        "clienteId": "2a83c26d-94fd-4d69-974d-e273c1b82be9",
+        "expiraEn": "2026-10-16T23:36:07.0086886\u002B00:00",
+        "usuarioId": "314171a2-177a-459d-a1fc-fd39bac4f398",
+        "clienteId": "c571f958-f8a9-4f00-8497-7ac22cafe1d9",
         "email": "otro.demo@example.test",
         "rol": "Cliente"
       }
     },
     {
-      "paso": "RNF-02 Rechazo de modificación ajena",
+      "paso": "RNF-02 Rechazo de modificaci\u00F3n ajena",
       "metodo": "PUT",
-      "ruta": "/api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d",
+      "ruta": "/api/turnos/20dc248e-29c4-4f75-be01-49299b0d8910",
       "esperado": 403,
       "obtenido": 403,
       "correcto": true,
       "peticion": {
-        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "fechaHora": "2026-10-23T22:06:45+00:00"
+        "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "fechaHora": "2026-10-23T22:36:06.8266947\u002B00:00"
       },
       "respuesta": {
         "type": "https://tools.ietf.org/html/rfc9110#section-15.5.4",
         "title": "Forbidden",
         "status": 403,
         "detail": "El cliente solo puede operar sobre sus propios turnos.",
-        "traceId": "00-e3ac0da151ac32b22fb0710b71c64aaf-20939e61ef9e3e35-00"
+        "traceId": "00-63f3c984043605ead3fcc98fd49b46aa-7f0c0661e34c2c69-00"
       }
     },
     {
-      "paso": "CU-04 Modificación por el titular",
+      "paso": "CU-04 Modificaci\u00F3n por el titular",
       "metodo": "PUT",
-      "ruta": "/api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d",
+      "ruta": "/api/turnos/20dc248e-29c4-4f75-be01-49299b0d8910",
       "esperado": 200,
       "obtenido": 200,
       "correcto": true,
       "peticion": {
-        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "fechaHora": "2026-10-23T22:06:45+00:00"
+        "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "fechaHora": "2026-10-23T22:36:06.8266947\u002B00:00"
       },
       "respuesta": {
-        "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
-        "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
-        "cliente": "Cliente Demostración",
-        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-        "servicio": "Lavado demostración",
+        "id": "20dc248e-29c4-4f75-be01-49299b0d8910",
+        "clienteId": "88961e25-f64f-488c-85a3-830254413fff",
+        "cliente": "Cliente Demostraci\u00F3n",
+        "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+        "servicio": "Lavado demostraci\u00F3n",
         "importe": 12000.0,
-        "fechaHora": "2026-10-23T22:06:45+00:00",
+        "fechaHora": "2026-10-23T22:36:06.8266947\u002B00:00",
         "estado": "Confirmado",
-        "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+        "fechaCreacion": "2026-10-16T21:36:06.8840938\u002B00:00"
       }
     },
     {
-      "paso": "CU-11 Agenda del día argentino",
+      "paso": "CU-11 Agenda del d\u00EDa argentino",
       "metodo": "GET",
       "ruta": "/api/turnos/agenda?fecha=2026-10-23",
       "esperado": 200,
@@ -216,22 +217,22 @@
       "peticion": null,
       "respuesta": [
         {
-          "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
-          "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
-          "cliente": "Cliente Demostración",
-          "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-          "servicio": "Lavado demostración",
+          "id": "20dc248e-29c4-4f75-be01-49299b0d8910",
+          "clienteId": "88961e25-f64f-488c-85a3-830254413fff",
+          "cliente": "Cliente Demostraci\u00F3n",
+          "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+          "servicio": "Lavado demostraci\u00F3n",
           "importe": 12000.0,
-          "fechaHora": "2026-10-23T22:06:45+00:00",
+          "fechaHora": "2026-10-23T22:36:06.8266947\u002B00:00",
           "estado": "Confirmado",
-          "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+          "fechaCreacion": "2026-10-16T21:36:06.8840938\u002B00:00"
         }
       ]
     },
     {
       "paso": "CU-02 Recordatorio por SMTP local",
       "metodo": "POST",
-      "ruta": "/api/recordatorios/procesar?desde=2026-10-23T21%3A06%3A45%2B00%3A00&hasta=2026-10-23T23%3A06%3A45%2B00%3A00",
+      "ruta": "/api/recordatorios/procesar?desde=2026-10-23T21%3A36%3A06.8266947%2B00%3A00\u0026hasta=2026-10-23T23%3A36%3A06.8266947%2B00%3A00",
       "esperado": 200,
       "obtenido": 200,
       "correcto": true,
@@ -243,10 +244,10 @@
         "omitidos": 0,
         "resultados": [
           {
-            "id": "169be213-a2e2-413b-bdf7-faee47a8bb55",
-            "turnoId": "a1613081-679c-48e5-ad49-1e336afdf95d",
-            "fechaProgramada": "2026-10-22T22:06:45+00:00",
-            "fechaProcesada": "2026-10-16T21:06:45.5772494+00:00",
+            "id": "dcdaa68b-9892-45a5-8248-05b19efa672f",
+            "turnoId": "20dc248e-29c4-4f75-be01-49299b0d8910",
+            "fechaProgramada": "2026-10-22T22:36:06.8266947\u002B00:00",
+            "fechaProcesada": "2026-10-16T21:36:07.1140318\u002B00:00",
             "estado": "Enviado",
             "detalle": "Recordatorio enviado correctamente."
           }
@@ -254,9 +255,9 @@
       }
     },
     {
-      "paso": "CU-02 Segundo procesamiento sin reenvío",
+      "paso": "CU-02 Segundo procesamiento sin reenv\u00EDo",
       "metodo": "POST",
-      "ruta": "/api/recordatorios/procesar?desde=2026-10-23T21%3A06%3A45%2B00%3A00&hasta=2026-10-23T23%3A06%3A45%2B00%3A00",
+      "ruta": "/api/recordatorios/procesar?desde=2026-10-23T21%3A36%3A06.8266947%2B00%3A00\u0026hasta=2026-10-23T23%3A36%3A06.8266947%2B00%3A00",
       "esperado": 200,
       "obtenido": 200,
       "correcto": true,
@@ -270,9 +271,9 @@
       }
     },
     {
-      "paso": "CU-05 Cancelación del turno",
+      "paso": "CU-05 Cancelaci\u00F3n del turno",
       "metodo": "DELETE",
-      "ruta": "/api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d",
+      "ruta": "/api/turnos/20dc248e-29c4-4f75-be01-49299b0d8910",
       "esperado": 204,
       "obtenido": 204,
       "correcto": true,
@@ -282,7 +283,7 @@
     {
       "paso": "CU-09 Horario liberado",
       "metodo": "GET",
-      "ruta": "/api/turnos/disponibilidad?fechaHora=2026-10-23T22%3A06%3A45%2B00%3A00",
+      "ruta": "/api/turnos/disponibilidad?fechaHora=2026-10-23T22%3A36%3A06.8266947%2B00%3A00",
       "esperado": 200,
       "obtenido": 200,
       "correcto": true,
@@ -301,20 +302,20 @@
       "peticion": null,
       "respuesta": [
         {
-          "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
-          "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
-          "cliente": "Cliente Demostración",
-          "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
-          "servicio": "Lavado demostración",
+          "id": "20dc248e-29c4-4f75-be01-49299b0d8910",
+          "clienteId": "88961e25-f64f-488c-85a3-830254413fff",
+          "cliente": "Cliente Demostraci\u00F3n",
+          "servicioId": "c0251b15-e074-4cf6-a6c1-9e8777513ccd",
+          "servicio": "Lavado demostraci\u00F3n",
           "importe": 12000.0,
-          "fechaHora": "2026-10-23T22:06:45+00:00",
+          "fechaHora": "2026-10-23T22:36:06.8266947\u002B00:00",
           "estado": "Cancelado",
-          "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+          "fechaCreacion": "2026-10-16T21:36:06.8840938\u002B00:00"
         }
       ]
     },
     {
-      "paso": "Validación de datos incompletos",
+      "paso": "Validaci\u00F3n de datos incompletos",
       "metodo": "POST",
       "ruta": "/api/turnos",
       "esperado": 400,
@@ -333,7 +334,7 @@
             "El campo ServicioId es obligatorio y no puede tener su valor predeterminado."
           ]
         },
-        "traceId": "00-899b8ae0434faac8a9d3ad64645dfb4b-48ee40e829132117-00"
+        "traceId": "00-bc95a235d2b50e485dc27a6e51cbe185-b9a8622a506f931c-00"
       }
     }
   ],

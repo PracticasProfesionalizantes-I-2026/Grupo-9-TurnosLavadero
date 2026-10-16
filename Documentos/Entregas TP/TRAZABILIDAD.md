@@ -44,4 +44,4 @@ El envío SMTP se prueba con un servidor local de prueba. No se conecta a una cu
 | RN-01 / RNF-03 | Colisión al insertar o actualizar sin chequeo previo, conservando el turno original | `AgendaAndConcurrencyTests.Repository_UniqueSlotRace_ThrowsDomainConflictAndPreservesSavedTurno` |
 | CU-01 / CU-03 / RNF-03 | Dos peticiones simultáneas reciben 201 y 409 | `AgendaAndConcurrencyTests.SimultaneousReservations_ReturnOne201AndOne409` |
 
-La suite HTTP principal utiliza un autenticador de pruebas. La demo `scripts/demo.py` complementa esta cobertura usando los JWT emitidos por la API real.
+La suite HTTP principal utiliza un autenticador de pruebas. La demo `tools/DemoRunner/Program.cs` complementa esta cobertura usando los JWT emitidos por la API real.
