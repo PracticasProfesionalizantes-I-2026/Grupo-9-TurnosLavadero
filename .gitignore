@@ -10,3 +10,7 @@ obj/
 TestResults/
 coverage/
 .env
+
+__pycache__/
+*.pyc
+bruno/environments/DemoLocal.bru

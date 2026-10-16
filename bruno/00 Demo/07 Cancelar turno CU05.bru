@@ -1,0 +1,21 @@
+meta {
+  name: Cancelar turno CU05
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/api/turnos/{{turnoId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("HTTP 204", function () {
+    expect(res.status).to.equal(204);
+  });
+}

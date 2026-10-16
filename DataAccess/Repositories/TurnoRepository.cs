@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using TurnosLavadero.DataAccess.Context;
 using TurnosLavadero.DataAccess.Entities;
 using TurnosLavadero.DataAccess.Interfaces;
 using TurnosLavadero.Shared.Enums;
+using TurnosLavadero.Shared.Exceptions;
 
 namespace TurnosLavadero.DataAccess.Repositories;
 
@@ -25,8 +27,11 @@ public sealed class TurnoRepository(LavaderoDbContext context) : ITurnoRepositor
         DateOnly date,
         CancellationToken cancellationToken = default)
     {
-        var from = new DateTimeOffset(date.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
-        var to = from.AddDays(1);
+        // La agenda corresponde al día del lavadero, no al día UTC del servidor.
+        var argentina = TimeZoneInfo.FindSystemTimeZoneById("America/Argentina/Buenos_Aires");
+        var localFrom = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
+        var from = new DateTimeOffset(TimeZoneInfo.ConvertTimeToUtc(localFrom, argentina));
+        var to = new DateTimeOffset(TimeZoneInfo.ConvertTimeToUtc(localFrom.AddDays(1), argentina));
         return await ReadQuery().Where(x => x.FechaHora >= from && x.FechaHora < to)
             .OrderBy(x => x.FechaHora)
             .ToListAsync(cancellationToken);
@@ -56,13 +61,30 @@ public sealed class TurnoRepository(LavaderoDbContext context) : ITurnoRepositor
         turno.Id = turno.Id == Guid.Empty ? Guid.NewGuid() : turno.Id;
         turno.FechaCreacion = turno.FechaCreacion == default ? DateTimeOffset.UtcNow : turno.FechaCreacion;
         context.Turnos.Add(turno);
-        await context.SaveChangesAsync(cancellationToken);
+        await SaveTurnoAsync(cancellationToken);
         return turno;
     }
 
     public async Task UpdateAsync(Turno turno, CancellationToken cancellationToken = default)
     {
         context.Turnos.Update(turno);
-        await context.SaveChangesAsync(cancellationToken);
+        await SaveTurnoAsync(cancellationToken);
+    }
+
+    private async Task SaveTurnoAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqliteException
+            { SqliteExtendedErrorCode: 2067 } sqlite
+            && sqlite.Message.Contains("Turnos.FechaHora", StringComparison.Ordinal))
+        {
+            // Dos solicitudes pueden superar juntas la comprobación previa del service.
+            // El índice único mantiene RN-01 y el controller devuelve el mismo 409.
+            throw new HorarioNoDisponibleException(
+                "El horario seleccionado ya no se encuentra disponible.");
+        }
     }
 }

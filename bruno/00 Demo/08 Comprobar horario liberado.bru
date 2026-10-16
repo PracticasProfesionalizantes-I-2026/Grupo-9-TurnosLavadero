@@ -1,0 +1,25 @@
+meta {
+  name: Comprobar horario liberado
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/turnos/disponibilidad?fechaHora={{demoNuevaFecha}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  if (res.status === 200 && res.body.disponible !== true) throw new Error("El horario debería quedar libre");
+}
+
+tests {
+  test("HTTP 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

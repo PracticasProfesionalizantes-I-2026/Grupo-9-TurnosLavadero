@@ -23,8 +23,8 @@ Permite al cliente o al empleado modificar los datos de un turno existente (fech
 servicio), verificando la disponibilidad del nuevo horario antes de actualizar el turno.
 
 ### 2. PRECONDICIONES
-1. El turno debe existir y encontrarse activo en la Capa de Persistencia (RN-06).
-2. El actor debe estar autenticado. Si es cliente, el turno debe pertenecerle (RN-10).
+- El turno debe existir y encontrarse activo en la Capa de Persistencia (RN-06).
+- El actor debe estar autenticado. Si es cliente, el turno debe pertenecerle (RN-10).
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 200)
 1. El Actor envía una petición al endpoint `PUT /api/turnos/{id}` con los datos modificados
@@ -95,9 +95,9 @@ servicio), verificando la disponibilidad del nuevo horario antes de actualizar e
 2. En todas las variantes el resultado (`200 OK`) es idéntico y el turno queda actualizado.
 
 ### 6. POSTCONDICIONES
-1. Se ha actualizado el registro persistente en la tabla `Turnos` con los nuevos datos
+- Se ha actualizado el registro persistente en la tabla `Turnos` con los nuevos datos
    (fecha, hora y/o servicio).
-2. El horario anterior queda nuevamente disponible y el nuevo horario deja de estarlo
+- El horario anterior queda nuevamente disponible y el nuevo horario deja de estarlo
    (impacto en la visibilidad de la agenda).
 
 ---
@@ -113,6 +113,7 @@ servicio), verificando la disponibilidad del nuevo horario antes de actualizar e
 | `403` | Forbidden | Un cliente intenta modificar un turno que no le pertenece. |
 | `404` | Not Found | Inexistencia del recurso referenciado (Turno) en la Capa de Persistencia. |
 | `409` | Conflict | Violación de invariantes de negocio (RN-01 horario ocupado / RN-06 turno no modificable). |
+| `401` | Unauthorized | Token ausente o inválido en la variante HTTP. |
 
 ### Nota: Validación vs. Verificación aplicada
 
@@ -126,3 +127,15 @@ servicio), verificando la disponibilidad del nuevo horario antes de actualizar e
 ### Matriz de trazabilidad
 
 Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
+
+### Trazabilidad por paso del flujo principal
+
+La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias filas indica que cubre el flujo completo, no que exista un test independiente por paso. Los flujos alternativos se detallan en [TRAZABILIDAD.md](TRAZABILIDAD.md).
+
+| Paso | Prueba unitaria específica | Prueba de integración |
+| --- | --- | --- |
+| 1 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
+| 2 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
+| 3 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
+| 4 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
+| 5 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |

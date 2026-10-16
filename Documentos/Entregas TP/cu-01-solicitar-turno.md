@@ -23,9 +23,9 @@ Permite al cliente registrado solicitar un turno para un servicio de lavado, eli
 servicio y un horario disponible, para que el sistema registre la solicitud y la confirme.
 
 ### 2. PRECONDICIONES
-1. El sistema debe estar en funcionamiento y con la Capa de Persistencia accesible
+- El sistema debe estar en funcionamiento y con la Capa de Persistencia accesible
    (servicios y agenda cargados).
-2. El cliente debe estar registrado y autenticado con un Token JWT válido.
+- El cliente debe estar registrado y autenticado con un Token JWT válido.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 201)
 1. El Actor envía una petición a `POST /api/turnos` con `servicioId`, `fechaHora`. El
@@ -91,9 +91,9 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
    idénticos.
 
 ### 6. POSTCONDICIONES
-1. Se ha creado un nuevo registro persistente en la tabla `Turnos` con ID único (GUID) y
+- Se ha creado un nuevo registro persistente en la tabla `Turnos` con ID único (GUID) y
    estado "Confirmado".
-2. El horario seleccionado ya no aparece en las listas de disponibilidad (impacto en la
+- El horario seleccionado ya no aparece en las listas de disponibilidad (impacto en la
    visibilidad para otros clientes y en la agenda de los empleados).
 
 ---
@@ -108,6 +108,8 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
 | `400` | Bad Request | Fallo en la validación de esquema o sintaxis del JSON recibido (campos faltantes, inválidos). |
 | `404` | Not Found | Inexistencia del recurso referenciado (Servicio) en la Capa de Persistencia. |
 | `409` | Conflict | Violación de invariantes de negocio (RN-01: horario no disponible / solapamiento). |
+| `401` | Unauthorized | Token ausente o inválido en la variante HTTP. |
+| `403` | Forbidden | Rol o titularidad sin permiso en la variante HTTP. |
 
 ### Nota: Validación vs. Verificación aplicada
 
@@ -120,3 +122,15 @@ servicio y un horario disponible, para que el sistema registre la solicitud y la
 ### Matriz de trazabilidad
 
 Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
+
+### Trazabilidad por paso del flujo principal
+
+La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias filas indica que cubre el flujo completo, no que exista un test independiente por paso. Los flujos alternativos se detallan en [TRAZABILIDAD.md](TRAZABILIDAD.md).
+
+| Paso | Prueba unitaria específica | Prueba de integración |
+| --- | --- | --- |
+| 1 | Sin prueba aislada por paso | `CasosDeUsoTests.SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
+| 2 | Sin prueba aislada por paso | `CasosDeUsoTests.SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
+| 3 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `CasosDeUsoTests.SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
+| 4 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `CasosDeUsoTests.SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
+| 5 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `CasosDeUsoTests.SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |

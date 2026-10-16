@@ -195,7 +195,7 @@ Cada controller tendrá bloques `try/catch` explícitos para las excepciones que
 
 | Método y ruta | Roles | Resultado principal |
 | --- | --- | --- |
-| `POST /api/auth/register` | Público | Registra un Cliente y su Usuario. `201`. |
+| `POST /api/auth/registro` | Público | Registra un Cliente y su Usuario. `201`. |
 | `POST /api/auth/login` | Público | Devuelve un JWT. `200`. |
 
 ### Clientes
@@ -222,11 +222,11 @@ Cada controller tendrá bloques `try/catch` explícitos para las excepciones que
 | Método y ruta | Roles | Resultado principal |
 | --- | --- | --- |
 | `GET /api/turnos/disponibilidad?fechaHora=` | Usuario autenticado | Indica si un instante futuro está disponible. `200`. |
-| `GET /api/turnos/mios` | Cliente | Lista exclusivamente sus turnos. `200`. |
-| `GET /api/turnos?fecha=` | Empleado, Administrador | Devuelve la agenda diaria. `200`. |
+| `GET /api/turnos/mis-turnos` | Cliente | Lista exclusivamente sus turnos. `200`. |
+| `GET /api/turnos/agenda?fecha=` | Empleado, Administrador | Devuelve la agenda diaria. `200`. |
 | `POST /api/turnos` | Cliente, Empleado, Administrador | Crea un turno según el rol. `201`. |
 | `PUT /api/turnos/{id}` | Propietario, Empleado, Administrador | Modifica un turno. `200`. |
-| `PATCH /api/turnos/{id}/cancelacion` | Propietario, Empleado, Administrador | Cambia el estado a Cancelado. `204`. |
+| `DELETE /api/turnos/{id}` | Propietario, Empleado, Administrador | Cambia el estado a Cancelado. `204`. |
 
 ### Recordatorios
 
@@ -273,7 +273,7 @@ Las variables de entorno almacenarán la URL base y los JWT de prueba; no se ver
 3. **Fase 3:** `API`, autenticación, controllers, pruebas de integración y colección Bruno.
 4. **Cierre automático:** `README.md`, `AGENTS.md`, árbol final, catálogo de endpoints y verificación con `dotnet build` y `dotnet test`.
 
-No se generará código hasta recibir la aprobación de este plan.
+El plan inicial ya fue implementado. Las rutas de este documento reflejan el contrato HTTP vigente.
 
 ## Actualización de recordatorios y fechas
 

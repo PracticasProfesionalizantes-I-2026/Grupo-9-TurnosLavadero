@@ -24,11 +24,11 @@ seleccionando el servicio y un horario disponible, para que el sistema verifique
 disponibilidad, registre el turno y confirme la creación.
 
 ### 2. PRECONDICIONES
-1. El sistema debe estar en funcionamiento y con la Capa de Persistencia accesible
+- El sistema debe estar en funcionamiento y con la Capa de Persistencia accesible
    (servicios y agenda cargados).
-2. El actor debe haber iniciado sesión y poseer un estado de autenticación activo (Token
+- El actor debe haber iniciado sesión y poseer un estado de autenticación activo (Token
    JWT válido) con permisos de escritura sobre el recurso Turnos.
-3. El cliente debe estar registrado en la tabla `Clientes`.
+- El cliente debe estar registrado en la tabla `Clientes`.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 201)
 1. El Actor envía una petición al endpoint `POST /api/turnos` con los datos del turno (JSON
@@ -97,9 +97,9 @@ disponibilidad, registre el turno y confirme la creación.
    idénticos.
 
 ### 6. POSTCONDICIONES
-1. Se ha creado un nuevo registro persistente en la tabla `Turnos` con ID único (GUID) y
+- Se ha creado un nuevo registro persistente en la tabla `Turnos` con ID único (GUID) y
    estado "Confirmado".
-2. El horario seleccionado ya no aparece en las listas de disponibilidad (impacto en la
+- El horario seleccionado ya no aparece en las listas de disponibilidad (impacto en la
    visibilidad para otros turnos y en la agenda diaria).
 
 ---
@@ -114,6 +114,8 @@ disponibilidad, registre el turno y confirme la creación.
 | `400` | Bad Request | Fallo en la validación de esquema o sintaxis del JSON recibido. |
 | `404` | Not Found | Inexistencia del recurso referenciado (Cliente) en la Capa de Persistencia. |
 | `409` | Conflict | Violación de invariantes de negocio (RN-01: horario ocupado / solapamiento). |
+| `401` | Unauthorized | Token ausente o inválido en la variante HTTP. |
+| `403` | Forbidden | Rol o titularidad sin permiso en la variante HTTP. |
 
 ### Nota: Validación vs. Verificación aplicada
 
@@ -126,3 +128,15 @@ disponibilidad, registre el turno y confirme la creación.
 ### Matriz de trazabilidad
 
 Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
+
+### Trazabilidad por paso del flujo principal
+
+La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias filas indica que cubre el flujo completo, no que exista un test independiente por paso. Los flujos alternativos se detallan en [TRAZABILIDAD.md](TRAZABILIDAD.md).
+
+| Paso | Prueba unitaria específica | Prueba de integración |
+| --- | --- | --- |
+| 1 | Sin prueba aislada por paso | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
+| 2 | Sin prueba aislada por paso | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
+| 3 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
+| 4 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
+| 5 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |

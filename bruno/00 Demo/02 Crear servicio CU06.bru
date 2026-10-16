@@ -1,0 +1,36 @@
+meta {
+  name: Crear servicio CU06
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/servicios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {"nombre":"Lavado demo {{demoRun}}","importe":12000}
+}
+
+script:pre-request {
+  bru.setEnvVar("demoRun", Date.now().toString());
+  const fecha = new Date(Date.now() + 7 * 86400000);
+  bru.setEnvVar("demoFecha", fecha.toISOString());
+  bru.setEnvVar("demoNuevaFecha", new Date(fecha.getTime() + 3600000).toISOString());
+}
+
+script:post-response {
+  if (res.status === 201) bru.setEnvVar("servicioId", res.body.id);
+}
+
+tests {
+  test("HTTP 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}
