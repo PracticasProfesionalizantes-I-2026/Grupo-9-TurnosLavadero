@@ -1,0 +1,25 @@
+meta {
+  name: Rechazar horario ocupado
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"{{demoFecha}}"}
+}
+
+tests {
+  test("HTTP 409", function () {
+    expect(res.status).to.equal(409);
+  });
+}

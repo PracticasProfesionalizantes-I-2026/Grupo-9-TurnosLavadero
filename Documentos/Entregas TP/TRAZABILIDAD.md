@@ -35,3 +35,13 @@ Los flujos donde el actor abandona una operación o no confirma no corresponden 
 ## Alcance de la verificación
 
 El envío SMTP se prueba con un servidor local de prueba. No se conecta a una cuenta real ni se envían mensajes a personas. Activar la configuración de un proveedor real requiere probar sus credenciales y permisos de envío en el entorno donde se ejecute la API.
+
+## Regresiones de cierre de entrega
+
+| Requisito | Escenario | Prueba de integración |
+| --- | --- | --- |
+| CU-11 / RNF-05 | Día argentino, inclusión de medianoche y exclusión del día siguiente | `AgendaAndConcurrencyTests.Agenda_UsesArgentineDayAndExcludesNextMidnight` |
+| RN-01 / RNF-03 | Colisión al insertar o actualizar sin chequeo previo, conservando el turno original | `AgendaAndConcurrencyTests.Repository_UniqueSlotRace_ThrowsDomainConflictAndPreservesSavedTurno` |
+| CU-01 / CU-03 / RNF-03 | Dos peticiones simultáneas reciben 201 y 409 | `AgendaAndConcurrencyTests.SimultaneousReservations_ReturnOne201AndOne409` |
+
+La suite HTTP principal utiliza un autenticador de pruebas. La demo `scripts/demo.py` complementa esta cobertura usando los JWT emitidos por la API real.

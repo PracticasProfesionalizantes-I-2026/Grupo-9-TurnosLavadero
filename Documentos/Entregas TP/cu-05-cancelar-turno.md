@@ -23,8 +23,8 @@ Permite al cliente o al empleado cancelar un turno previamente registrado, previ
 confirmación del actor, liberando el horario para que quede nuevamente disponible.
 
 ### 2. PRECONDICIONES
-1. El turno debe existir y encontrarse activo en la Capa de Persistencia (RN-06).
-2. El actor debe estar autenticado. Si es cliente, el turno debe pertenecerle (RN-10).
+- El turno debe existir y encontrarse activo en la Capa de Persistencia (RN-06).
+- El actor debe estar autenticado. Si es cliente, el turno debe pertenecerle (RN-10).
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 204)
 1. El actor selecciona el turno y confirma la operación en la interfaz.
@@ -66,8 +66,8 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
 2. En todas las variantes el resultado (`204 No Content`) es idéntico.
 
 ### 6. POSTCONDICIONES
-1. Se ha actualizado el registro persistente en la tabla `Turnos` al estado "Cancelado".
-2. El horario queda nuevamente disponible y vuelve a aparecer en las listas de
+- Se ha actualizado el registro persistente en la tabla `Turnos` al estado "Cancelado".
+- El horario queda nuevamente disponible y vuelve a aparecer en las listas de
    disponibilidad (impacto en la visibilidad de la agenda).
 
 ---
@@ -82,6 +82,7 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
 | `403` | Forbidden | Un cliente intenta cancelar un turno que no le pertenece. |
 | `404` | Not Found | Inexistencia del recurso referenciado (Turno) en la Capa de Persistencia. |
 | `409` | Conflict | Violación de RN-06: turno vencido o no activo. |
+| `401` | Unauthorized | Token ausente o inválido en la variante HTTP. |
 
 ### Nota: Validación vs. Verificación aplicada
 
@@ -95,3 +96,16 @@ confirmación del actor, liberando el horario para que quede nuevamente disponib
 ### Matriz de trazabilidad
 
 Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
+
+### Trazabilidad por paso del flujo principal
+
+La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias filas indica que cubre el flujo completo, no que exista un test independiente por paso. Los flujos alternativos se detallan en [TRAZABILIDAD.md](TRAZABILIDAD.md).
+
+| Paso | Prueba unitaria específica | Prueba de integración |
+| --- | --- | --- |
+| 1 | Sin prueba aislada por paso | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
+| 2 | Sin prueba aislada por paso | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
+| 3 | Sin prueba aislada por paso | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
+| 4 | `TurnoServiceTests.CancelAsync_WithValidTurno_ChangesStateToCanceled` | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
+| 5 | `TurnoServiceTests.CancelAsync_WithValidTurno_ChangesStateToCanceled` | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
+| 6 | `TurnoServiceTests.CancelAsync_WithValidTurno_ChangesStateToCanceled` | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |

@@ -1,0 +1,29 @@
+meta {
+  name: Reservar turno CU01
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"{{demoFecha}}"}
+}
+
+script:post-response {
+  if (res.status === 201) bru.setEnvVar("turnoId", res.body.id);
+}
+
+tests {
+  test("HTTP 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

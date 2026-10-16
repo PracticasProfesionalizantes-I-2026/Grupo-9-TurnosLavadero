@@ -1,0 +1,32 @@
+meta {
+  name: Registrar cliente CU07
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/registro
+  body: json
+  auth: none
+}
+
+body:json {
+  {"nombre":"Cliente","apellido":"Demo","email":"demo-{{demoRun}}@example.test","password":"{{demoPassword}}"}
+}
+
+script:pre-request {
+  bru.setEnvVar("demoPassword", "Demo-" + Date.now().toString() + "-" + Math.random().toString(36).slice(2));
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("token", res.body.token);
+    bru.setEnvVar("clienteId", res.body.clienteId);
+  }
+}
+
+tests {
+  test("HTTP 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

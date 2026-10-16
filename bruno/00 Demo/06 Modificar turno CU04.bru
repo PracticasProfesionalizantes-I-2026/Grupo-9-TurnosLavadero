@@ -1,0 +1,25 @@
+meta {
+  name: Modificar turno CU04
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/api/turnos/{{turnoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"{{demoNuevaFecha}}"}
+}
+
+tests {
+  test("HTTP 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

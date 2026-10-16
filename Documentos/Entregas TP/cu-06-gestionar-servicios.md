@@ -24,9 +24,9 @@ el nombre y el importe a facturar de cada uno, para que el sistema valide y pers
 cambios.
 
 ### 2. PRECONDICIONES
-1. El sistema debe estar en funcionamiento y con la Capa de Persistencia accesible (tabla
+- El sistema debe estar en funcionamiento y con la Capa de Persistencia accesible (tabla
    `Servicios`).
-2. El administrador debe haber iniciado sesión y poseer un estado de autenticación activo
+- El administrador debe haber iniciado sesión y poseer un estado de autenticación activo
    (Token JWT válido) con permisos de administración sobre el recurso Servicios.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 201/200)
@@ -99,9 +99,9 @@ cambios.
    operación (201/200/204).
 
 ### 6. POSTCONDICIONES
-1. Los servicios y sus importes quedan actualizados de forma persistente. La eliminación
+- Los servicios y sus importes quedan actualizados de forma persistente. La eliminación
    física solo se completa cuando el servicio no posee turnos relacionados.
-2. Los clientes que consulten disponibilidad o reserven turnos ven el catálogo y los
+- Los clientes que consulten disponibilidad o reserven turnos ven el catálogo y los
    importes actualizados (impacto en la visibilidad).
 
 ---
@@ -118,6 +118,8 @@ cambios.
 | `400` | Bad Request | Fallo de esquema o importe menor o igual que cero (RN-08). |
 | `404` | Not Found | Inexistencia del recurso referenciado (Servicio) en la Capa de Persistencia. |
 | `409` | Conflict | Nombre duplicado (RN-07) o servicio relacionado con turnos (RN-09). |
+| `401` | Unauthorized | Token ausente o inválido en la variante HTTP. |
+| `403` | Forbidden | Rol o titularidad sin permiso en la variante HTTP. |
 
 ### Nota: Validación vs. Verificación aplicada
 
@@ -132,3 +134,15 @@ cambios.
 ### Matriz de trazabilidad
 
 Consultar [TRAZABILIDAD.md](TRAZABILIDAD.md), que identifica las pruebas existentes y las limitaciones de los flujos sin interfaz de usuario.
+
+### Trazabilidad por paso del flujo principal
+
+La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias filas indica que cubre el flujo completo, no que exista un test independiente por paso. Los flujos alternativos se detallan en [TRAZABILIDAD.md](TRAZABILIDAD.md).
+
+| Paso | Prueba unitaria específica | Prueba de integración |
+| --- | --- | --- |
+| 1 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
+| 2 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
+| 3 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
+| 4 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
+| 5 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |

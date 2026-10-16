@@ -24,9 +24,9 @@ lavado, siempre que el turno esté confirmado y el cliente tenga un correo elect
 las notificaciones habilitadas.
 
 ### 2. PRECONDICIONES
-1. Debe existir al menos un turno confirmado con fecha próxima en la Capa de Persistencia.
-2. El cliente debe tener un medio de contacto registrado y válido (en la tabla `Clientes`).
-3. SMTP está configurado y `Recordatorios:Habilitados` está activado. El proceso interno
+- Debe existir al menos un turno confirmado con fecha próxima en la Capa de Persistencia.
+- El cliente debe tener un medio de contacto registrado y válido (en la tabla `Clientes`).
+- SMTP está configurado y `Recordatorios:Habilitados` está activado. El proceso interno
    no requiere una acción del cliente. La ejecución HTTP manual requiere un administrador.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz - HTTP 200)
@@ -66,9 +66,9 @@ las notificaciones habilitadas.
    debe estar habilitada.
 
 ### 6. POSTCONDICIONES
-1. Se genera un registro del envío (o del intento fallido) en la tabla
+- Se genera un registro del envío (o del intento fallido) en la tabla
    `Recordatorios` (Capa de Persistencia).
-2. El recordatorio queda marcado como procesado, por lo que no se reenvía en la próxima
+- El recordatorio queda marcado como procesado, por lo que no se reenvía en la próxima
    ejecución (impacto en la visibilidad del proceso).
 
 ---
@@ -80,6 +80,8 @@ las notificaciones habilitadas.
 | Código HTTP | Nombre Técnico | Contexto de Aplicación en el Caso de Uso |
 | --- | --- | --- |
 | `200` | OK | Consulta de recordatorios procesados con éxito (lectura del proceso). |
+| `401` | Unauthorized | Token ausente o inválido en la variante HTTP. |
+| `403` | Forbidden | Rol o titularidad sin permiso en la variante HTTP. |
 
 ### Nota: Validación vs. Verificación aplicada
 
@@ -100,3 +102,14 @@ Un error SMTP se registra como fallido y no detiene los demás avisos. Un interv
 inválido devuelve 400; un usuario sin sesión recibe 401 y uno sin rol administrador, 403.
 Todos los intentos procesados se excluyen de ejecuciones posteriores, incluidos fallidos y omitidos.
 Consultar [configuración y límites](../RECORDATORIOS.md).
+
+### Trazabilidad por paso del flujo principal
+
+La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias filas indica que cubre el flujo completo, no que exista un test independiente por paso. Los flujos alternativos se detallan en [TRAZABILIDAD.md](TRAZABILIDAD.md).
+
+| Paso | Prueba unitaria específica | Prueba de integración |
+| --- | --- | --- |
+| 1 | Sin prueba aislada por paso | `RecordatoriosTests.Process_RecordsOutcomeAndDoesNotRepeat` |
+| 2 | Sin prueba aislada por paso | `RecordatoriosTests.Process_RecordsOutcomeAndDoesNotRepeat` |
+| 3 | Sin prueba aislada por paso | `RecordatoriosTests.Process_RecordsOutcomeAndDoesNotRepeat` |
+| 4 | Sin prueba aislada por paso | `RecordatoriosTests.Process_RecordsOutcomeAndDoesNotRepeat` |

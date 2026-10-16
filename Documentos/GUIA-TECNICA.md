@@ -75,7 +75,7 @@ Para disponer de un administrador de demostración en la base local, definir las
 
 ```powershell
 $env:TURNOSLAVADERO_SEED_ADMIN_EMAIL = "admin@lavadero.local"
-$env:TURNOSLAVADERO_SEED_ADMIN_PASSWORD = "Admin123!"
+$env:TURNOSLAVADERO_SEED_ADMIN_PASSWORD = [guid]::NewGuid().ToString("N")
 dotnet run --project API
 ```
 
@@ -98,7 +98,7 @@ Content-Type: application/json
   "nombre": "Juan",
   "apellido": "Prueba",
   "email": "juan.prueba@example.test",
-  "password": "ClaveSegura123",
+  "password": "<contraseña elegida por el cliente>",
   "telefono": "+54 3493 123456"
 }
 ```
@@ -111,7 +111,7 @@ Content-Type: application/json
 
 {
   "email": "admin@lavadero.local",
-  "password": "Admin123!"
+  "password": "<contraseña definida en la variable de entorno>"
 }
 ```
 
@@ -194,7 +194,7 @@ Los recordatorios se configuran siguiendo [RECORDATORIOS.md](RECORDATORIOS.md).
 
 ## Bruno
 
-Abrir la carpeta `bruno/` como colección y seleccionar el ambiente `Local`. La colección contiene un request por endpoint y ejemplos de errores `400`, `404` y `409`. El login de administrador usa las credenciales de demostración indicadas anteriormente y guarda automáticamente el token.
+Abrir la carpeta `bruno/` como colección y seleccionar el ambiente `Local`. La colección contiene un request por endpoint y ejemplos de errores `400`, `404` y `409`. El login de administrador usa `adminEmail` y `adminPassword` del entorno local y guarda automáticamente el token. El script `scripts/iniciar-demo.ps1` genera credenciales temporales y crea `DemoLocal.bru`, excluido de Git.
 
 ## Documentación del análisis
 

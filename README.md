@@ -41,3 +41,16 @@ Definen el objetivo del sistema, los actores, permisos y restricciones de las op
 - **Autenticación:** JWT con roles Cliente, Empleado y Administrador.
 - **Pruebas manuales:** colección [Bruno](bruno/).
 - **Documentación interactiva local:** Scalar en `http://localhost:5088/scalar/v1` al ejecutar la API en desarrollo.
+
+## Entrega y exposición
+
+- [Cinco RF y cinco RNF con evidencia](Documentos/Entregas%20TP/REQUISITOS.md)
+- [Casos de uso y trazabilidad](Documentos/Entregas%20TP/README.md)
+- [Guía de demostración y reparto de exposición](Documentos/Presentacion/GUIA-DEMO.md)
+- [Estado de entrega y revisión cruzada](Documentos/Presentacion/REVISION-Y-ENTREGA.md)
+- [Presentación PowerPoint](Documentos/Presentacion/TurnosLavadero-Grupo9.pptx)
+- [Guion de exposición](Documentos/Presentacion/GUION.md)
+
+La demo automática se ejecuta con `python scripts/demo.py` después de compilar. Usa JWT reales, SQLite temporal y SMTP local. La carpeta Bruno `00 Demo` permite mostrar cinco casos de uso en orden sin copiar IDs a mano.
+
+Verificación de esta entrega: **78 pruebas aprobadas** y **17 respuestas HTTP verificadas**. [Resultados y límites](Documentos/Presentacion/Evidencia/README.md).

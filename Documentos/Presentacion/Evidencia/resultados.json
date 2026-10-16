@@ -1,0 +1,342 @@
+{
+  "fechaUtc": "2026-10-16T21:06:46.085416+00:00",
+  "pasos": [
+    {
+      "paso": "CU-08 Inicio de sesión administrador",
+      "metodo": "POST",
+      "ruta": "/api/auth/login",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": {
+        "email": "admin@lavadero.local",
+        "password": "[omitido]"
+      },
+      "respuesta": {
+        "token": "[omitido]",
+        "expiraEn": "2026-10-16T23:06:45.0555767+00:00",
+        "usuarioId": "61fc827d-7e57-4cbe-9924-3675f7c7cb03",
+        "clienteId": null,
+        "email": "admin@lavadero.local",
+        "rol": "Administrador"
+      }
+    },
+    {
+      "paso": "CU-06 Alta de servicio",
+      "metodo": "POST",
+      "ruta": "/api/servicios",
+      "esperado": 201,
+      "obtenido": 201,
+      "correcto": true,
+      "peticion": {
+        "nombre": "Lavado demostración",
+        "importe": 12000
+      },
+      "respuesta": {
+        "id": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "nombre": "Lavado demostración",
+        "importe": 12000,
+        "activo": true
+      }
+    },
+    {
+      "paso": "CU-07 Registro de cliente",
+      "metodo": "POST",
+      "ruta": "/api/auth/registro",
+      "esperado": 201,
+      "obtenido": 201,
+      "correcto": true,
+      "peticion": {
+        "nombre": "Cliente",
+        "apellido": "Demostración",
+        "email": "cliente.demo@example.test",
+        "password": "[omitido]"
+      },
+      "respuesta": {
+        "token": "[omitido]",
+        "expiraEn": "2026-10-16T23:06:45.3170501+00:00",
+        "usuarioId": "cec3dc56-34e1-4815-a71c-83bc063ad359",
+        "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
+        "email": "cliente.demo@example.test",
+        "rol": "Cliente"
+      }
+    },
+    {
+      "paso": "RNF-01 Acceso sin token",
+      "metodo": "GET",
+      "ruta": "/api/servicios",
+      "esperado": 401,
+      "obtenido": 401,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": null
+    },
+    {
+      "paso": "CU-13 Consulta de servicios",
+      "metodo": "GET",
+      "ruta": "/api/servicios",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": [
+        {
+          "id": "ce92263b-c8ed-4495-9c61-a1a6e8c41028",
+          "nombre": "Lavado completo",
+          "importe": 15000.0,
+          "activo": true
+        },
+        {
+          "id": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+          "nombre": "Lavado demostración",
+          "importe": 12000.0,
+          "activo": true
+        },
+        {
+          "id": "3689ad0e-294b-41d1-aed9-62ee599d0fca",
+          "nombre": "Lavado exterior",
+          "importe": 8000.0,
+          "activo": true
+        }
+      ]
+    },
+    {
+      "paso": "CU-01 Reserva del cliente autenticado",
+      "metodo": "POST",
+      "ruta": "/api/turnos",
+      "esperado": 201,
+      "obtenido": 201,
+      "correcto": true,
+      "peticion": {
+        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "fechaHora": "2026-10-23T21:06:45+00:00"
+      },
+      "respuesta": {
+        "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
+        "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
+        "cliente": "Cliente Demostración",
+        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "servicio": "Lavado demostración",
+        "importe": 12000.0,
+        "fechaHora": "2026-10-23T21:06:45+00:00",
+        "estado": "Confirmado",
+        "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+      }
+    },
+    {
+      "paso": "RN-01 Horario ocupado",
+      "metodo": "POST",
+      "ruta": "/api/turnos",
+      "esperado": 409,
+      "obtenido": 409,
+      "correcto": true,
+      "peticion": {
+        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "fechaHora": "2026-10-23T21:06:45+00:00"
+      },
+      "respuesta": {
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.10",
+        "title": "Conflict",
+        "status": 409,
+        "detail": "El horario seleccionado ya no se encuentra disponible.",
+        "traceId": "00-591e7b15188d9710c1b3eda5e5f451c7-052b95d11723c4e0-00"
+      }
+    },
+    {
+      "paso": "Registro de segundo cliente",
+      "metodo": "POST",
+      "ruta": "/api/auth/registro",
+      "esperado": 201,
+      "obtenido": 201,
+      "correcto": true,
+      "peticion": {
+        "nombre": "Otro",
+        "apellido": "Cliente",
+        "email": "otro.demo@example.test",
+        "password": "[omitido]"
+      },
+      "respuesta": {
+        "token": "[omitido]",
+        "expiraEn": "2026-10-16T23:06:45.4671901+00:00",
+        "usuarioId": "bc189c98-6753-443a-870a-003a32a06fd6",
+        "clienteId": "2a83c26d-94fd-4d69-974d-e273c1b82be9",
+        "email": "otro.demo@example.test",
+        "rol": "Cliente"
+      }
+    },
+    {
+      "paso": "RNF-02 Rechazo de modificación ajena",
+      "metodo": "PUT",
+      "ruta": "/api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d",
+      "esperado": 403,
+      "obtenido": 403,
+      "correcto": true,
+      "peticion": {
+        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "fechaHora": "2026-10-23T22:06:45+00:00"
+      },
+      "respuesta": {
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.4",
+        "title": "Forbidden",
+        "status": 403,
+        "detail": "El cliente solo puede operar sobre sus propios turnos.",
+        "traceId": "00-e3ac0da151ac32b22fb0710b71c64aaf-20939e61ef9e3e35-00"
+      }
+    },
+    {
+      "paso": "CU-04 Modificación por el titular",
+      "metodo": "PUT",
+      "ruta": "/api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": {
+        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "fechaHora": "2026-10-23T22:06:45+00:00"
+      },
+      "respuesta": {
+        "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
+        "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
+        "cliente": "Cliente Demostración",
+        "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+        "servicio": "Lavado demostración",
+        "importe": 12000.0,
+        "fechaHora": "2026-10-23T22:06:45+00:00",
+        "estado": "Confirmado",
+        "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+      }
+    },
+    {
+      "paso": "CU-11 Agenda del día argentino",
+      "metodo": "GET",
+      "ruta": "/api/turnos/agenda?fecha=2026-10-23",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": [
+        {
+          "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
+          "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
+          "cliente": "Cliente Demostración",
+          "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+          "servicio": "Lavado demostración",
+          "importe": 12000.0,
+          "fechaHora": "2026-10-23T22:06:45+00:00",
+          "estado": "Confirmado",
+          "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+        }
+      ]
+    },
+    {
+      "paso": "CU-02 Recordatorio por SMTP local",
+      "metodo": "POST",
+      "ruta": "/api/recordatorios/procesar?desde=2026-10-23T21%3A06%3A45%2B00%3A00&hasta=2026-10-23T23%3A06%3A45%2B00%3A00",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": {
+        "procesados": 1,
+        "enviados": 1,
+        "fallidos": 0,
+        "omitidos": 0,
+        "resultados": [
+          {
+            "id": "169be213-a2e2-413b-bdf7-faee47a8bb55",
+            "turnoId": "a1613081-679c-48e5-ad49-1e336afdf95d",
+            "fechaProgramada": "2026-10-22T22:06:45+00:00",
+            "fechaProcesada": "2026-10-16T21:06:45.5772494+00:00",
+            "estado": "Enviado",
+            "detalle": "Recordatorio enviado correctamente."
+          }
+        ]
+      }
+    },
+    {
+      "paso": "CU-02 Segundo procesamiento sin reenvío",
+      "metodo": "POST",
+      "ruta": "/api/recordatorios/procesar?desde=2026-10-23T21%3A06%3A45%2B00%3A00&hasta=2026-10-23T23%3A06%3A45%2B00%3A00",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": {
+        "procesados": 0,
+        "enviados": 0,
+        "fallidos": 0,
+        "omitidos": 0,
+        "resultados": []
+      }
+    },
+    {
+      "paso": "CU-05 Cancelación del turno",
+      "metodo": "DELETE",
+      "ruta": "/api/turnos/a1613081-679c-48e5-ad49-1e336afdf95d",
+      "esperado": 204,
+      "obtenido": 204,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": null
+    },
+    {
+      "paso": "CU-09 Horario liberado",
+      "metodo": "GET",
+      "ruta": "/api/turnos/disponibilidad?fechaHora=2026-10-23T22%3A06%3A45%2B00%3A00",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": {
+        "disponible": true
+      }
+    },
+    {
+      "paso": "CU-10 Historial de turnos propios",
+      "metodo": "GET",
+      "ruta": "/api/turnos/mis-turnos",
+      "esperado": 200,
+      "obtenido": 200,
+      "correcto": true,
+      "peticion": null,
+      "respuesta": [
+        {
+          "id": "a1613081-679c-48e5-ad49-1e336afdf95d",
+          "clienteId": "2f70d0fd-80ad-4473-8527-caf16545851b",
+          "cliente": "Cliente Demostración",
+          "servicioId": "138ec1fb-4a05-43b6-9d6d-193d9bb0ee99",
+          "servicio": "Lavado demostración",
+          "importe": 12000.0,
+          "fechaHora": "2026-10-23T22:06:45+00:00",
+          "estado": "Cancelado",
+          "fechaCreacion": "2026-10-16T21:06:45.3669325+00:00"
+        }
+      ]
+    },
+    {
+      "paso": "Validación de datos incompletos",
+      "metodo": "POST",
+      "ruta": "/api/turnos",
+      "esperado": 400,
+      "obtenido": 400,
+      "correcto": true,
+      "peticion": {},
+      "respuesta": {
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+        "title": "One or more validation errors occurred.",
+        "status": 400,
+        "errors": {
+          "FechaHora": [
+            "El campo FechaHora es obligatorio y no puede tener su valor predeterminado."
+          ],
+          "ServicioId": [
+            "El campo ServicioId es obligatorio y no puede tener su valor predeterminado."
+          ]
+        },
+        "traceId": "00-899b8ae0434faac8a9d3ad64645dfb4b-48ee40e829132117-00"
+      }
+    }
+  ],
+  "correosCapturadosLocalmente": 1,
+  "entregaExterna": false
+}
