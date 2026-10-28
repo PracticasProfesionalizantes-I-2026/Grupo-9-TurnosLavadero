@@ -6,7 +6,7 @@
 - Cinco RF y cinco RNF con criterios de comprobación en `../Entregas TP/REQUISITOS.md`.
 - Colección Bruno con una secuencia de exposición que guarda variables automáticamente.
 - Demo aislada con JWT real, base temporal y recepción SMTP local.
-- Presentación y guion para 24 minutos repartidos entre Juan y Tomás.
+- Presentación y guion para 25 minutos repartidos entre Juan y Tomás.
 - CI con restore, build, test y demo automática.
 - Correcciones de agenda argentina y conflicto concurrente con pruebas de regresión.
 
@@ -26,4 +26,8 @@ Se conservaron los enlaces a Drive y el Word original. El texto de Classroom men
 
 ## Resultado de la verificación local
 
-Compilación sin errores ni advertencias. Pasaron 31 pruebas unitarias y 47 de integración (78 en total). La demo verificó 17 respuestas HTTP y capturó un correo SMTP local. Ver [evidencia](Evidencia/README.md) y [reporte de la demo](Evidencia/demo.html).
+Compilación sin errores ni advertencias. Pasaron 31 pruebas unitarias y 96 de integración (127 en total). La demo verificó 17 respuestas HTTP y capturó un correo SMTP local. Ver [evidencia](Evidencia/README.md) y [reporte de la demo](Evidencia/demo.html).
+
+## Revisión del 28/10
+
+Se revisaron guion y presentación a partir de la estructura visual del video y las correcciones escritas de clase. La exposición usa Bruno como herramienta principal, incluye JWT reales y una correspondencia de los trece casos de uso. Ver [guía](GUIA-DEMO.md) y [evidencia vigente](Evidencia/DEFENSA-28-10.md).

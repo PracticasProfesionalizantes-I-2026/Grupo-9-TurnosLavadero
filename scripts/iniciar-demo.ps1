@@ -29,7 +29,6 @@ vars {
 }
 "@
     Set-Content -Path "bruno/environments/DemoLocal.bru" -Value $brunoEnvironment -Encoding UTF8
-    Write-Host "Scalar: http://localhost:5088/scalar/v1"
     Write-Host "Bruno: entorno DemoLocal, carpeta 00 Demo, ejecutar en orden."
     dotnet run --no-build --no-launch-profile --project API
 } finally {

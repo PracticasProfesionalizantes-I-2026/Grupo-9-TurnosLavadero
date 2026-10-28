@@ -1,5 +1,5 @@
 meta {
-  name: Rechazar horario ocupado
+  name: Reservar turno CU01
   type: http
   seq: 5
 }
@@ -18,8 +18,12 @@ body:json {
   {"servicioId":"{{servicioId}}","fechaHora":"{{demoFecha}}"}
 }
 
+script:post-response {
+  if (res.status === 201) bru.setEnvVar("turnoId", res.body.id);
+}
+
 tests {
-  test("HTTP 409", function () {
-    expect(res.status).to.equal(409);
+  test("HTTP 201", function () {
+    expect(res.status).to.equal(201);
   });
 }

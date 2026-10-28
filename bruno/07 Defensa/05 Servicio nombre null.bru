@@ -1,0 +1,25 @@
+meta {
+  name: Servicio nombre null
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/servicios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {"nombre":null,"importe":100}
+}
+
+tests {
+  test("HTTP 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

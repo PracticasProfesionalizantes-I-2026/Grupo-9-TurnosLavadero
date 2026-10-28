@@ -1,0 +1,21 @@
+meta {
+  name: Registro cuerpo null
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/registro
+  body: json
+  auth: none
+}
+
+body:json {
+  null
+}
+
+tests {
+  test("HTTP 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

@@ -1,0 +1,36 @@
+{
+  "fecha": "2026-10-28",
+  "compilacion": {
+    "correcta": true,
+    "advertencias": 0,
+    "errores": 0
+  },
+  "suiteCSharp": {
+    "unitarias": 31,
+    "integracion": 96,
+    "total": 127,
+    "fallidas": 0,
+    "omitidas": 0
+  },
+  "bruno": {
+    "version": "4.3.0",
+    "carpetas": [
+      "00 Demo",
+      "07 Defensa"
+    ],
+    "peticiones": 25,
+    "testsAprobados": 25
+  },
+  "demoBase": {
+    "peticiones": 17,
+    "correosSmtpLocales": 1,
+    "entregaExterna": false
+  },
+  "controles": [
+    "Campos null, vacíos, omitidos y espacios",
+    "Rechazos sin altas ni modificaciones parciales",
+    "JWT real: firma, vigencia, emisor y audiencia",
+    "Reutilización del token de Cliente y separación de Administrador",
+    "Duplicados de registro y servicios, incluidas altas simultáneas"
+  ]
+}

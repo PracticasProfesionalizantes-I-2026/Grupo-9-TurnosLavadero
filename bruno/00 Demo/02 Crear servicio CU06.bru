@@ -15,11 +15,14 @@ auth:bearer {
 }
 
 body:json {
-  {"nombre":"Lavado demo {{demoRun}}","importe":12000}
+  {"nombre":"{{demoServicioNombre}}","importe":12000}
 }
 
 script:pre-request {
   bru.setEnvVar("demoRun", Date.now().toString());
+  bru.setEnvVar("demoEmail", "demo-" + bru.getEnvVar("demoRun") + "@example.test");
+  bru.setEnvVar("demoServicioNombre", "Lavado demo " + bru.getEnvVar("demoRun"));
+  bru.setEnvVar("demoPassword", "Demo-" + Date.now().toString() + "-" + Math.random().toString(36).slice(2));
   const fecha = new Date(Date.now() + 7 * 86400000);
   bru.setEnvVar("demoFecha", fecha.toISOString());
   bru.setEnvVar("demoNuevaFecha", new Date(fecha.getTime() + 3600000).toISOString());

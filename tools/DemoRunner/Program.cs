@@ -22,6 +22,7 @@ var output = Path.GetFullPath(Option("--output", "TestResults/demo"));
 Directory.CreateDirectory(output);
 var dotnet = Option("--dotnet", Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet");
 var configuration = Option("--configuration", "Debug");
+var brunoCli = Option("--bruno-cli", "");
 var apiDll = Path.Combine(root.FullName, "API", "bin", configuration, "net10.0", "API.dll");
 if (!File.Exists(apiDll)) throw new InvalidOperationException("Compilar primero: dotnet build TurnosLavadero.slnx");
 var temporary = Path.Combine(Path.GetTempPath(), $"lavadero-demo-{Guid.NewGuid():N}");
@@ -108,6 +109,29 @@ try
     var history = await Request("CU-10 Historial de turnos propios", "GET", "/api/turnos/mis-turnos", 200, token: token);
     Require(history!.AsArray().Any(x => x!["id"]!.GetValue<string>() == turno && x["estado"]!.GetValue<string>() == "Cancelado"), "Debe conservarse el turno cancelado.");
     await Request("Validación de datos incompletos", "POST", "/api/turnos", 400, new { }, token);
+    if (!string.IsNullOrWhiteSpace(brunoCli))
+    {
+        // Credenciales efímeras fuera de Git. El reporte de Bruno omite cuerpos y headers.
+        var environmentFile = Path.Combine(temporary, "BrunoAudit.bru");
+        await File.WriteAllTextAsync(environmentFile,
+            $"vars {{\n  baseUrl: {http.BaseAddress.ToString().TrimEnd('/')}\n  adminEmail: admin@lavadero.local\n  adminPassword: {adminPassword}\n}}\n");
+        var brunoStart = new ProcessStartInfo(Option("--node", "node"))
+        {
+            WorkingDirectory = Path.Combine(root.FullName, "bruno"), UseShellExecute = false,
+            RedirectStandardOutput = true, RedirectStandardError = true
+        };
+        foreach (var argument in new[] { Path.GetFullPath(brunoCli), "run", "00 Demo", "07 Defensa",
+            "--env-file", environmentFile, "--noproxy", "--reporter-json", Path.Combine(output, "bruno.json"),
+            "--reporter-skip-all-headers", "--reporter-skip-body" }) brunoStart.ArgumentList.Add(argument);
+        using var bruno = Process.Start(brunoStart) ?? throw new InvalidOperationException("No se pudo iniciar Bruno CLI.");
+        var standardOutput = bruno.StandardOutput.ReadToEndAsync();
+        var standardError = bruno.StandardError.ReadToEndAsync();
+        await bruno.WaitForExitAsync();
+        var report = await standardOutput + "\n" + await standardError;
+        await File.WriteAllTextAsync(Path.Combine(output, "bruno.txt"), report);
+        Require(bruno.ExitCode == 0, "Falló la colección Bruno. Consultar bruno.txt.");
+        Console.WriteLine("Bruno CLI: carpetas 00 Demo y 07 Defensa aprobadas. Ver bruno.txt.");
+    }
     var summary = new { fechaUtc = DateTimeOffset.UtcNow, implementacion = "C# / .NET 10", pasos = steps,
         correosCapturadosLocalmente = smtp.Messages.Count, entregaExterna = false };
     await File.WriteAllTextAsync(Path.Combine(output, "resultados.json"), JsonSerializer.Serialize(summary, jsonOptions));

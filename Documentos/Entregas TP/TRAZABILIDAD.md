@@ -45,3 +45,19 @@ El envío SMTP se prueba con un servidor local de prueba. No se conecta a una cu
 | CU-01 / CU-03 / RNF-03 | Dos peticiones simultáneas reciben 201 y 409 | `AgendaAndConcurrencyTests.SimultaneousReservations_ReturnOne201AndOne409` |
 
 La suite HTTP principal utiliza un autenticador de pruebas. La demo `tools/DemoRunner/Program.cs` complementa esta cobertura usando los JWT emitidos por la API real.
+
+## Defensa del 28/10: validaciones y JWT reales
+
+| Escenario | Prueba |
+| --- | --- |
+| Registro: null, vacío y espacios sin filas nuevas | `Register_NullEmptyOrWhitespace_Returns400WithoutDirtyRows` |
+| Cuerpo null, faltante o JSON roto | `Register_NullMissingOrMalformedBody_Returns400WithoutWrites` |
+| Alta/modificación de servicio inválida conserva la base | `Servicio_InvalidName_Returns400WithoutCreateOrUpdate` |
+| Alta/modificación de cliente con campos inválidos | `Cliente_InvalidFields_Return400AndPreserveData` |
+| GUID y fecha inválidos no crean turno | `Turno_InvalidGuidOrDate_Return400WithoutWrites` |
+| Falta de token, formato, firma, expiración, emisor o audiencia | `JwtBearer_RejectsInvalidTokenWith401` |
+| Login real, mismo token y rechazo de elevación de rol | `Login_RealJwtIsReusedAndClientCannotEscalateRole` |
+| Emails y nombres duplicados normalizados | `DuplicateEmailAndService_Return409WithoutExtraRows` |
+| Registro/servicio simultáneo devuelve 201 y 409 | `ConcurrentDuplicates_ReturnOne201AndOne409` |
+
+Estas pruebas están en `DefensaValidationAndJwtTests` y usan `RealJwtApiFactory`, que conserva la autenticación JwtBearer real y SQLite temporal. El mapa completo está en [MAPA-DEFENSA.md](MAPA-DEFENSA.md).

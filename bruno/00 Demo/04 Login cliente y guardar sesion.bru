@@ -1,0 +1,29 @@
+meta {
+  name: Login cliente y guardar sesion
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {"email":"{{demoEmail}}","password":"{{demoPassword}}"}
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("token", res.body.token);
+    bru.setEnvVar("clienteToken", res.body.token);
+    bru.setEnvVar("clienteId", res.body.clienteId);
+  }
+}
+
+tests {
+  test("HTTP 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

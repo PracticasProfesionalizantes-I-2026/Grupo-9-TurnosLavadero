@@ -1,0 +1,25 @@
+meta {
+  name: Turno fecha pasada
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"2020-01-01T10:00:00-03:00"}
+}
+
+tests {
+  test("HTTP 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

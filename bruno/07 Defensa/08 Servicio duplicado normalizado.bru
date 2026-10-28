@@ -1,0 +1,25 @@
+meta {
+  name: Servicio duplicado normalizado
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/servicios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {"nombre":"  {{demoServicioNombre}}  ","importe":200}
+}
+
+tests {
+  test("HTTP 409", function () {
+    expect(res.status).to.equal(409);
+  });
+}
