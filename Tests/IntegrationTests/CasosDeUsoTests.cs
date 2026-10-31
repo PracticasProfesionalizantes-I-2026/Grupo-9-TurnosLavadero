@@ -20,6 +20,8 @@ public sealed class CasosDeUsoTests(LavaderoApiFactory factory) : IClassFixture<
         return client;
     }
 
+    private static int sequence;
+
     private async Task<(Guid Cliente, Guid Servicio, Guid Turno, DateTimeOffset Fecha)> CreateTurno()
     {
         using var client = Client();
@@ -27,7 +29,7 @@ public sealed class CasosDeUsoTests(LavaderoApiFactory factory) : IClassFixture<
         var servicios = await client.GetFromJsonAsync<JsonElement>("/api/servicios");
         var cliente = clientes[0].GetProperty("id").GetGuid();
         var servicio = servicios[0].GetProperty("id").GetGuid();
-        var fecha = DateTimeOffset.UtcNow.AddDays(15).AddTicks(Random.Shared.Next(100000));
+        var fecha = DateTimeOffset.UtcNow.AddDays(15 + Interlocked.Increment(ref sequence) * 3);
         var response = await client.PostAsJsonAsync("/api/turnos", new { clienteId = cliente, servicioId = servicio, fechaHora = fecha });
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
@@ -90,7 +92,7 @@ public sealed class CasosDeUsoTests(LavaderoApiFactory factory) : IClassFixture<
             var db = scope.ServiceProvider.GetRequiredService<LavaderoDbContext>();
             var turno = await db.Turnos.FindAsync(data.Turno);
             if (scenario == "cancelado") turno!.Estado = EstadoTurno.Cancelado;
-            else turno!.FechaHora = DateTimeOffset.UtcNow.AddDays(-1);
+            else turno!.FechaHora = data.Fecha.AddYears(-10);
             await db.SaveChangesAsync();
         }
         var fecha = scenario == "pasado" ? DateTimeOffset.UtcNow.AddDays(-1) : data.Fecha.AddHours(1);
@@ -125,7 +127,7 @@ public sealed class CasosDeUsoTests(LavaderoApiFactory factory) : IClassFixture<
             var db = scope.ServiceProvider.GetRequiredService<LavaderoDbContext>();
             var turno = await db.Turnos.FindAsync(data.Turno);
             if (scenario == "cancelado") turno!.Estado = EstadoTurno.Cancelado;
-            else turno!.FechaHora = DateTimeOffset.UtcNow.AddDays(-1);
+            else turno!.FechaHora = data.Fecha.AddYears(-10);
             await db.SaveChangesAsync();
         }
         using var client = scenario == "ajeno" ? Client("Cliente", Guid.NewGuid()) : Client();
@@ -136,7 +138,7 @@ public sealed class CasosDeUsoTests(LavaderoApiFactory factory) : IClassFixture<
         Assert.Equal(scenario is "correcto" or "cancelado" ? EstadoTurno.Cancelado : EstadoTurno.Confirmado, saved.Estado);
         if (scenario == "correcto")
         {
-            var availability = await client.GetFromJsonAsync<JsonElement>($"/api/turnos/disponibilidad?fechaHora={Uri.EscapeDataString(data.Fecha.ToString("O"))}");
+            var availability = await client.GetFromJsonAsync<JsonElement>($"/api/turnos/disponibilidad?servicioId={data.Servicio}&fechaHora={Uri.EscapeDataString(data.Fecha.ToString("O"))}");
             Assert.True(availability.GetProperty("disponible").GetBoolean());
         }
     }

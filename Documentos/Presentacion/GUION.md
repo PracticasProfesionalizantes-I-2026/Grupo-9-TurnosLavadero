@@ -200,7 +200,7 @@ Mostrar la respuesta ya obtenida de 00 Demo/03 y abrir RegisterClienteAsync y Us
 
 ### Qué decir
 
-Para reservar mandamos el servicio y la fecha elegida. Si el actor es Cliente, el sistema obtiene su identificador del JWT. La API verifica que el cliente y el servicio existan, que la fecha sea futura y que ese instante no esté ocupado. Guarda el turno como Confirmado y responde 201. Repetimos la misma petición y recibimos 409. La base conserva un único turno confirmado en ese instante.
+Para reservar mandamos el servicio y la fecha elegida. Si el actor es Cliente, el sistema obtiene su identificador del JWT. La API verifica que el cliente y el servicio existan, que la fecha sea futura y que el intervalo completo no esté ocupado. Guarda el turno como Confirmado y responde 201. Repetimos la misma petición y recibimos 409. La base conserva turnos confirmados sin intervalos superpuestos.
 
 ### Qué hacer
 
@@ -362,3 +362,9 @@ Dejar abiertos el mapa y la carpeta 07 Defensa. Reservar cinco minutos adicional
 - Los códigos 400, 401, 403, 404 y 409 corresponden a causas diferentes. No decir que todo es un error de autenticación.
 - No asegurar que los 13 casos se muestran completos durante la exposición. Se muestran los cinco elegidos y se dispone del mapa de los 13.
 - El video recibido sirve como referencia visual de estructura: problema, funcionalidades, arquitectura y paso al código. Los controles específicos corresponden a las observaciones escritas que compartió Juan. No se realizó una transcripción íntegra del audio.
+
+## Actualización obligatoria para la defensa - 31/10/2026
+
+Usar el nuevo mockup en `Documentos/Mockup`, no la sala anterior. Explicar que el perfil se registra una vez y reservar requiere solamente servicio y fecha/hora. En gestionar servicios mostrar la duración en minutos. En reservar mostrar inicio, duración y fin devueltos por la API.
+
+Para la pregunta de Oscar: un lavado de 60 minutos a las 10:00 impide reservar a las 10:30, aunque el inicio sea distinto. A las 11:00 sí se permite. Ejecutar `08 Duracion` después de `00 Demo` y `07 Defensa`. Esta demostración reemplaza la explicación antigua que solo comparaba instantes iguales; no afirmar que la versión anterior ya resolvía este problema. Los resultados del 28/10 son históricos; usar `Evidencia/MOCKUP-31-10.md` para la revisión actual.

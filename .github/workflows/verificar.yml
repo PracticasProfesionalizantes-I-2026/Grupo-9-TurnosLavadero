@@ -1,7 +1,7 @@
 name: Verificar API y demostración
 on:
   push:
-    branches: [main, cierre-entrega-y-demo, demo-completamente-csharp, preparar-defensa-bruno]
+    branches: [main, cierre-entrega-y-demo, demo-completamente-csharp, preparar-defensa-bruno, corregir-mockup-contrato-api]
   pull_request:
 permissions:
   contents: read

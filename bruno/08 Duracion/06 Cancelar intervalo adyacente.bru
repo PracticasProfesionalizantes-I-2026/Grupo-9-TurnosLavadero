@@ -1,0 +1,18 @@
+meta {
+  name: Cancelar intervalo adyacente
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/api/turnos/{{intervaloAdyacenteId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+tests {
+  test("HTTP 204", function () { expect(res.status).to.equal(204);  });
+}

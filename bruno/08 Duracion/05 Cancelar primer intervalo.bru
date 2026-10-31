@@ -1,0 +1,18 @@
+meta {
+  name: Cancelar primer intervalo
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/turnos/{{intervaloId}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+tests {
+  test("HTTP 204", function () { expect(res.status).to.equal(204);  });
+}

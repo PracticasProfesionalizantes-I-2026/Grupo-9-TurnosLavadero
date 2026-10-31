@@ -5,6 +5,7 @@ public sealed class Servicio
     public Guid Id { get; set; }
     public string Nombre { get; set; } = string.Empty;
     public decimal Importe { get; set; }
+    public int DuracionMinutos { get; set; } = 30;
     public bool Activo { get; set; } = true;
 
     public ICollection<Turno> Turnos { get; set; } = [];

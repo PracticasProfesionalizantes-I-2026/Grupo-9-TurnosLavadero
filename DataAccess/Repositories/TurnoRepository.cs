@@ -56,6 +56,13 @@ public sealed class TurnoRepository(LavaderoDbContext context) : ITurnoRepositor
                 && (!excludeId.HasValue || x.Id != excludeId.Value),
             cancellationToken);
 
+    public Task<bool> ExistsOverlappingAsync(
+        DateTimeOffset inicio, DateTimeOffset fin, Guid? excludeId = null,
+        CancellationToken cancellationToken = default) =>
+        context.Turnos.AsNoTracking().AnyAsync(x =>
+            x.Estado == EstadoTurno.Confirmado && x.FechaHora < fin && x.FechaFin > inicio
+            && (!excludeId.HasValue || x.Id != excludeId.Value), cancellationToken);
+
     public async Task<Turno> CreateAsync(Turno turno, CancellationToken cancellationToken = default)
     {
         turno.Id = turno.Id == Guid.Empty ? Guid.NewGuid() : turno.Id;
@@ -77,12 +84,12 @@ public sealed class TurnoRepository(LavaderoDbContext context) : ITurnoRepositor
         {
             await context.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException ex) when (ex.InnerException is SqliteException
-            { SqliteExtendedErrorCode: 2067 } sqlite
-            && sqlite.Message.Contains("Turnos.FechaHora", StringComparison.Ordinal))
+        catch (DbUpdateException ex) when (ex.InnerException is SqliteException sqlite
+            && (sqlite.SqliteExtendedErrorCode == 2067 && sqlite.Message.Contains("Turnos.FechaHora", StringComparison.Ordinal)
+                || sqlite.SqliteExtendedErrorCode == 1811 && sqlite.Message.Contains("TURNOS_SOLAPADOS", StringComparison.Ordinal)))
         {
             // Dos solicitudes pueden superar juntas la comprobación previa del service.
-            // El índice único mantiene RN-01 y el controller devuelve el mismo 409.
+            // El índice y los triggers de intervalo mantienen RN-01 y se devuelve 409.
             throw new HorarioNoDisponibleException(
                 "El horario seleccionado ya no se encuentra disponible.");
         }

@@ -1,0 +1,18 @@
+meta {
+  name: Consultar intervalo ocupado
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/turnos/disponibilidad?servicioId={{servicioId}}&fechaHora={{intervaloMedio}}
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+tests {
+  test("HTTP 200", function () { expect(res.status).to.equal(200); expect(res.body.disponible).to.equal(false); });
+}

@@ -41,13 +41,22 @@ public sealed class TurnoService(
 
     public async Task<bool> IsAvailableAsync(
         DateTimeOffset fechaHora,
+        Guid servicioId,
+        Guid? excludeId = null,
         CancellationToken cancellationToken = default)
     {
         EnsureAuthenticated();
         var utcDate = ValidateFuture(fechaHora);
-        return !await turnoRepository.ExistsActiveAtAsync(
-            utcDate,
-            cancellationToken: cancellationToken);
+        var servicio = await GetActiveServicioAsync(servicioId, cancellationToken);
+        if (excludeId.HasValue)
+        {
+            var propio = await turnoRepository.GetByIdAsync(excludeId.Value, cancellationToken)
+                ?? throw new TurnoNotFoundException("El turno a modificar no existe.");
+            EnsureCanOperate(propio);
+            EnsureModifiable(propio);
+        }
+        return !await turnoRepository.ExistsOverlappingAsync(
+            utcDate, EndOf(utcDate, servicio.DuracionMinutos), excludeId, cancellationToken);
     }
 
     public async Task<TurnoResponseDTO> CreateAsync(
@@ -60,8 +69,8 @@ public sealed class TurnoService(
         var servicio = await GetActiveServicioAsync(dto.ServicioId, cancellationToken);
         var fechaHora = ValidateFuture(dto.FechaHora);
 
-        if (await turnoRepository.ExistsActiveAtAsync(
-                fechaHora,
+        if (await turnoRepository.ExistsOverlappingAsync(
+                fechaHora, EndOf(fechaHora, servicio.DuracionMinutos),
                 cancellationToken: cancellationToken))
         {
             throw new HorarioNoDisponibleException(
@@ -73,6 +82,7 @@ public sealed class TurnoService(
             ClienteId = cliente.Id,
             ServicioId = servicio.Id,
             FechaHora = fechaHora,
+            DuracionMinutos = servicio.DuracionMinutos,
             Estado = EstadoTurno.Confirmado,
             FechaCreacion = clock.UtcNow
         };
@@ -97,7 +107,7 @@ public sealed class TurnoService(
         var servicio = await GetActiveServicioAsync(dto.ServicioId, cancellationToken);
         var fechaHora = ValidateFuture(dto.FechaHora);
 
-        if (await turnoRepository.ExistsActiveAtAsync(fechaHora, id, cancellationToken))
+        if (await turnoRepository.ExistsOverlappingAsync(fechaHora, EndOf(fechaHora, servicio.DuracionMinutos), id, cancellationToken))
         {
             throw new HorarioNoDisponibleException(
                 "El horario seleccionado ya no se encuentra disponible.");
@@ -106,6 +116,7 @@ public sealed class TurnoService(
         turno.ServicioId = servicio.Id;
         turno.Servicio = servicio;
         turno.FechaHora = fechaHora;
+        turno.DuracionMinutos = servicio.DuracionMinutos;
         await turnoRepository.UpdateAsync(turno, cancellationToken);
         return MapToResponseDTO(turno);
     }
@@ -179,6 +190,12 @@ public sealed class TurnoService(
         return servicio;
     }
 
+    private static DateTimeOffset EndOf(DateTimeOffset inicio, int minutos)
+    {
+        try { return inicio.AddMinutes(minutos); }
+        catch (ArgumentOutOfRangeException) { throw new ValidationException("La fecha final del turno está fuera de rango."); }
+    }
+
     private DateTimeOffset ValidateFuture(DateTimeOffset value)
     {
         var utcDate = value.ToUniversalTime();
@@ -238,6 +255,8 @@ public sealed class TurnoService(
         Servicio = turno.Servicio.Nombre,
         Importe = turno.Servicio.Importe,
         FechaHora = turno.FechaHora,
+        DuracionMinutos = turno.DuracionMinutos,
+        FechaFin = turno.FechaFin,
         Estado = turno.Estado,
         FechaCreacion = turno.FechaCreacion
     };

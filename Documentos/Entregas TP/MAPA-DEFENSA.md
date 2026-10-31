@@ -52,3 +52,7 @@ Los nombres de pruebas de la tabla se localizan en Tests/IntegrationTests. Las p
 ## Fechas y frontend
 
 El cliente propone fecha/hora. La API comprueba futuro y disponibilidad y asigna el estado. La conversión UTC y los límites de la agenda argentina se realizan en el backend. El script de Bruno que genera una fecha de ejemplo no aplica reglas de negocio ni constituye un frontend. Esta entrega incluye API y mockup, sin interfaz final implementada.
+
+## Corrección de correspondencia del mockup
+
+La referencia visual vigente es `Documentos/Mockup/README.md`. El catálogo incluye duración y la reserva guarda inicio, duración y fin, sin repetir contacto. Para RN-01 mostrar `ExistsOverlappingAsync`, los triggers de la migración y `TurnoIntervalsTests`: comparar solo igualdad de inicio ya no es la regla implementada.

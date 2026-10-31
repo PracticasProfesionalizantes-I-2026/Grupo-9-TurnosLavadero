@@ -1,0 +1,19 @@
+meta {
+  name: Turno rechaza datos que no se guardan
+  type: http
+  seq: 17
+}
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+auth:bearer {
+  token: {{clienteToken}}
+}
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"{{demoFecha}}","notas":"No ignorar este dato"}
+}
+tests {
+  test("Campo fuera de contrato: HTTP 400", function () { expect(res.status).to.equal(400); });
+}

@@ -147,7 +147,7 @@ Para los endpoints protegidos se envía `Authorization: Bearer <token>`.
 | `DELETE` | `/api/servicios/{id}` | Admin | Elimina un servicio sin dependencias (`204`). |
 | `GET` | `/api/turnos/mis-turnos` | Cliente | Lista los turnos propios. |
 | `GET` | `/api/turnos/agenda?fecha=AAAA-MM-DD` | Empleado/Admin | Consulta la agenda diaria. |
-| `GET` | `/api/turnos/disponibilidad?fechaHora=...` | Autenticado | Indica si el horario está disponible. |
+| `GET` | `/api/turnos/disponibilidad?servicioId=...&fechaHora=...` | Autenticado | Indica si el horario está disponible. |
 | `POST` | `/api/turnos` | Autenticado | Crea un turno y devuelve `201`. |
 | `PUT` | `/api/turnos/{id}` | Propietario/Personal | Modifica un turno activo. |
 | `DELETE` | `/api/turnos/{id}` | Propietario/Personal | Cancela el turno y devuelve `204`. |
@@ -203,8 +203,16 @@ Abrir la carpeta `bruno/` como colección y seleccionar el ambiente `Local`. La 
 - [Casos de uso](Entregas%20TP/)
 - [Plan de arquitectura](../PLAN-ARQUITECTURA.md)
 - [Documento compartido](https://docs.google.com/document/d/1u6gnrypKfr5JKO2foNjE4LByljXXXwsm/edit?usp=sharing)
-- [Mockup en Excalidraw](https://excalidraw.com/#room=4c555b22d46d1dd52a49,qfMk6W81Y5vJPTPZ82flhQ)
+- [Nuevo mockup: pantallas y contrato](Mockup/README.md)
 
 ## Demo automática en C#
 
 El proyecto auxiliar `tools/DemoRunner` es una aplicación de consola .NET 10 escrita en C#. Usa HttpClient, System.Text.Json y TcpListener de la biblioteca estándar. No agrega paquetes ni requiere otro intérprete. Después de compilar la solución: `dotnet run --no-build --project tools/DemoRunner -- --output TestResults/demo`.
+
+## Contrato de tiempos (31/10/2026)
+
+Servicios de alta/edición: agregar `duracionMinutos`, entero entre 1 y 480; si se omite, se conserva compatibilidad con valor 30. La nueva interfaz lo envía siempre. Turnos de respuesta: `duracionMinutos` y `fechaFin` son valores calculados/guardados por el servidor.
+
+Consultar disponibilidad con `GET /api/turnos/disponibilidad?servicioId=GUID&fechaHora=FECHA-CON-OFFSET`. Para reprogramar, agregar `excludeId=GUID-DEL-TURNO`; se verifica autorización antes de excluirlo. La respuesta sigue siendo `{ "disponible": true/false }`. Consultar no reserva: el alta y la modificación vuelven a comprobar y SQLite protege la escritura simultánea.
+
+Los cuerpos de alta/edición de turnos y servicios rechazan propiedades fuera de su DTO con 400, evitando una aceptación aparente de datos que no se guardarían. Ver el [nuevo mockup y la migración](Mockup/README.md).

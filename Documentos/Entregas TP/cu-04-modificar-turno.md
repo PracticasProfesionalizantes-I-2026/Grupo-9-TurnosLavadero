@@ -139,3 +139,7 @@ La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias fila
 | 3 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
 | 4 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
 | 5 | Sin prueba aislada por paso | `CasosDeUsoTests.UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
+
+## Corrección de intervalos - 31/10/2026
+
+El servicio elegido define la duración. La API comprueba `[inicio, fin)` completo contra turnos confirmados; horarios de inicio distintos pueden entrar en conflicto. Al reservar o reprogramar se persisten duración y fin. La consulta de disponibilidad recibe `servicioId` y `fechaHora`; para modificar recibe `excludeId` y verifica permiso sobre ese turno. Los turnos adyacentes se permiten. No se vuelven a pedir nombre, teléfono ni correo al reservar: se reutiliza Cliente.

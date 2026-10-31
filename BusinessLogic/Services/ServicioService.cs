@@ -36,6 +36,7 @@ public sealed class ServicioService(
         EnsureAdministrator();
         var nombre = NormalizeName(dto.Nombre);
         ValidateImporte(dto.Importe);
+        ValidateDuracion(dto.DuracionMinutos);
 
         if (await servicioRepository.ExistsByNormalizedNameAsync(
                 nombre,
@@ -48,6 +49,7 @@ public sealed class ServicioService(
         {
             Nombre = nombre,
             Importe = dto.Importe,
+            DuracionMinutos = dto.DuracionMinutos,
             Activo = true
         };
 
@@ -65,6 +67,7 @@ public sealed class ServicioService(
             ?? throw new ServicioNotFoundException($"No existe el servicio con ID {id}.");
         var nombre = NormalizeName(dto.Nombre);
         ValidateImporte(dto.Importe);
+        ValidateDuracion(dto.DuracionMinutos);
 
         if (await servicioRepository.ExistsByNormalizedNameAsync(nombre, id, cancellationToken))
         {
@@ -73,6 +76,7 @@ public sealed class ServicioService(
 
         servicio.Nombre = nombre;
         servicio.Importe = dto.Importe;
+        servicio.DuracionMinutos = dto.DuracionMinutos;
         servicio.Activo = dto.Activo;
         await servicioRepository.UpdateAsync(servicio, cancellationToken);
         return MapToResponseDTO(servicio);
@@ -120,6 +124,12 @@ public sealed class ServicioService(
         return normalized;
     }
 
+    private static void ValidateDuracion(int minutos)
+    {
+        if (minutos is < 1 or > 480)
+            throw new ValidationException("La duración debe estar entre 1 y 480 minutos.");
+    }
+
     private static void ValidateImporte(decimal importe)
     {
         if (importe <= 0)
@@ -133,6 +143,7 @@ public sealed class ServicioService(
         Id = servicio.Id,
         Nombre = servicio.Nombre,
         Importe = servicio.Importe,
+        DuracionMinutos = servicio.DuracionMinutos,
         Activo = servicio.Activo
     };
 }

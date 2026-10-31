@@ -141,7 +141,7 @@ Cada service tendrá métodos privados `MapToResponseDTO`. No se utilizará Auto
 - `GetByDateAsync`
 - `CreateAsync`
 - `UpdateAsync`
-- `ExistsActiveAtAsync`
+- `ExistsOverlappingAsync`
 
 ### IUsuarioRepository
 
@@ -221,7 +221,7 @@ Cada controller tendrá bloques `try/catch` explícitos para las excepciones que
 
 | Método y ruta | Roles | Resultado principal |
 | --- | --- | --- |
-| `GET /api/turnos/disponibilidad?fechaHora=` | Usuario autenticado | Indica si un instante futuro está disponible. `200`. |
+| `GET /api/turnos/disponibilidad?servicioId=&fechaHora=` | Usuario autenticado | Indica si un instante futuro está disponible. `200`. |
 | `GET /api/turnos/mis-turnos` | Cliente | Lista exclusivamente sus turnos. `200`. |
 | `GET /api/turnos/agenda?fecha=` | Empleado, Administrador | Devuelve la agenda diaria. `200`. |
 | `POST /api/turnos` | Cliente, Empleado, Administrador | Crea un turno según el rol. `201`. |
@@ -293,3 +293,9 @@ UTC en SQLite para permitir filtros y ordenación en SQL. La migración Normaliz
 normaliza la representación de fechas UTC existentes sin perder su precisión.
 
 La especificación funcional se amplía a CU-07 a CU-13; consultar el índice de la entrega.
+
+## Corrección de intervalos y mockup (31/10/2026)
+
+`Servicio.DuracionMinutos` y los DTOs del catálogo expresan un entero de 1 a 480 (30 por compatibilidad si se omite). `Turno.DuracionMinutos` copia el valor al reservar/reprogramar, y `FechaFin` conserva el fin en UTC. Las respuestas de turnos incluyen ambos campos. `ExistsOverlappingAsync` aplica intervalos semiabiertos y los triggers SQLite impiden colisiones entre escrituras simultáneas. La API no recibe duración, fin ni estado desde el cliente al reservar.
+
+Consultar `Documentos/Mockup/CONTRATO-PANTALLAS.md` y la migración `ServiceDurationAndTurnoIntervals`. No usar la consulta antigua de igualdad de inicio para decidir disponibilidad.

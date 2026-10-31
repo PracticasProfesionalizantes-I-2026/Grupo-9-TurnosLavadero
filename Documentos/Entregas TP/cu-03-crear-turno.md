@@ -140,3 +140,7 @@ La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias fila
 | 3 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
 | 4 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
 | 5 | `TurnoServiceTests.CreateAsync_WithValidClientData_SavesAndReturnsTurno` | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
+
+## Corrección de intervalos - 31/10/2026
+
+El servicio elegido define la duración. La API comprueba `[inicio, fin)` completo contra turnos confirmados; horarios de inicio distintos pueden entrar en conflicto. Al reservar o reprogramar se persisten duración y fin. La consulta de disponibilidad recibe `servicioId` y `fechaHora`; para modificar recibe `excludeId` y verifica permiso sobre ese turno. Los turnos adyacentes se permiten. No se vuelven a pedir nombre, teléfono ni correo al reservar: se reutiliza Cliente.

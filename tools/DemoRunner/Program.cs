@@ -104,7 +104,7 @@ try
     Require(repeat!["procesados"]!.GetValue<int>() == 0 && smtp.Messages.Count == 1, "No debe reenviarse el correo.");
     await Request("CU-05 Cancelación del turno", "DELETE", $"/api/turnos/{turno}", 204, token: token);
     var available = await Request("CU-09 Horario liberado", "GET",
-        "/api/turnos/disponibilidad?fechaHora=" + Uri.EscapeDataString(update.fechaHora.ToString("O")), 200, token: token);
+        "/api/turnos/disponibilidad?servicioId=" + service + "&fechaHora=" + Uri.EscapeDataString(update.fechaHora.ToString("O")), 200, token: token);
     Require(available!["disponible"]!.GetValue<bool>(), "El horario debe quedar libre.");
     var history = await Request("CU-10 Historial de turnos propios", "GET", "/api/turnos/mis-turnos", 200, token: token);
     Require(history!.AsArray().Any(x => x!["id"]!.GetValue<string>() == turno && x["estado"]!.GetValue<string>() == "Cancelado"), "Debe conservarse el turno cancelado.");
@@ -120,7 +120,7 @@ try
             WorkingDirectory = Path.Combine(root.FullName, "bruno"), UseShellExecute = false,
             RedirectStandardOutput = true, RedirectStandardError = true
         };
-        foreach (var argument in new[] { Path.GetFullPath(brunoCli), "run", "00 Demo", "07 Defensa",
+        foreach (var argument in new[] { Path.GetFullPath(brunoCli), "run", "00 Demo", "07 Defensa", "08 Duracion",
             "--env-file", environmentFile, "--noproxy", "--reporter-json", Path.Combine(output, "bruno.json"),
             "--reporter-skip-all-headers", "--reporter-skip-body" }) brunoStart.ArgumentList.Add(argument);
         using var bruno = Process.Start(brunoStart) ?? throw new InvalidOperationException("No se pudo iniciar Bruno CLI.");
@@ -130,7 +130,7 @@ try
         var report = await standardOutput + "\n" + await standardError;
         await File.WriteAllTextAsync(Path.Combine(output, "bruno.txt"), report);
         Require(bruno.ExitCode == 0, "Falló la colección Bruno. Consultar bruno.txt.");
-        Console.WriteLine("Bruno CLI: carpetas 00 Demo y 07 Defensa aprobadas. Ver bruno.txt.");
+        Console.WriteLine("Bruno CLI: carpetas 00 Demo, 07 Defensa y 08 Duracion aprobadas. Ver bruno.txt.");
     }
     var summary = new { fechaUtc = DateTimeOffset.UtcNow, implementacion = "C# / .NET 10", pasos = steps,
         correosCapturadosLocalmente = smtp.Messages.Count, entregaExterna = false };

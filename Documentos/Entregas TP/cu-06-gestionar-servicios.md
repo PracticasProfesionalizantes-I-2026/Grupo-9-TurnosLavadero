@@ -146,3 +146,5 @@ La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias fila
 | 3 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
 | 4 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
 | 5 | Sin prueba aislada por paso | `CasosDeUsoTests.Servicios_UpdateDeleteAndProtectRelatedService` |
+
+El catálogo también recibe y devuelve `duracionMinutos` (1..480). Su cambio no modifica reservas existentes; al reprogramar se aplica la duración vigente.

@@ -61,3 +61,17 @@ La suite HTTP principal utiliza un autenticador de pruebas. La demo `tools/DemoR
 | Registro/servicio simultáneo devuelve 201 y 409 | `ConcurrentDuplicates_ReturnOne201AndOne409` |
 
 Estas pruebas están en `DefensaValidationAndJwtTests` y usan `RealJwtApiFactory`, que conserva la autenticación JwtBearer real y SQLite temporal. El mapa completo está en [MAPA-DEFENSA.md](MAPA-DEFENSA.md).
+
+## Nuevo mockup e intervalos (31/10/2026)
+
+| Regla / recorrido | Evidencia |
+| --- | --- |
+| Registro, perfil guardado y reserva sin repetir contacto | MockupContractTests.RegistroPerfilReserva_ConservaContactoSinVolverAPedirlo |
+| Rechazo de campos sin destino persistido | MockupContractTests.Turno_CampoFueraDeContrato_Devuelve400SinPersistir; TurnoIntervalsTests.Servicio_CampoDesconocido_NoSeIgnora |
+| RN-01: intervalo completo y adyacencia | TurnoIntervalsTests.Reserva_ValidaIntervaloCompletoYPermiteAdyacentes |
+| Modificación y cancelación de intervalos | TurnoIntervalsTests.Modificar_RechazaSolapamientoConservaOriginalYExcluyePropio; Cancelar_LiberaTodoElIntervalo |
+| Duración copiada y validada | TurnoIntervalsTests.EditarDuracionDelCatalogo_NoMueveReservasExistentes; Servicio_DuracionInvalida_NoSeGuarda |
+| Concurrencia y restricción al guardar | TurnoIntervalsTests.SolicitudesSimultaneas_ConDistintoInicioSolapado_SoloUnaSeGuarda; Persistencia_RechazaIntervalosSolapadosAunqueSeOmitaElService |
+| Migración conservadora | UtcDatesMigrationTests |
+
+Contrato de interfaz: [pantallas y persistencia](../Mockup/CONTRATO-PANTALLAS.md). Demostración manual: carpeta `08 Duracion` de Bruno, después de `00 Demo` y `07 Defensa`.

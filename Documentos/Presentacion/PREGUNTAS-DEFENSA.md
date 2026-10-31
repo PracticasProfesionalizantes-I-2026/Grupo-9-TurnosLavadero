@@ -16,7 +16,7 @@
 | ¿Usan el mismo token para todo? | Reutilizamos uno por actor durante esta sesión de demo. Los tokens de Cliente y Administrador son diferentes y van en variables distintas. | Bruno: adminToken y clienteToken/token |
 | ¿Garantizan una sola sesión por usuario? | No implementamos exclusividad global ni revocación. El token es stateless y un nuevo login puede emitir otro válido. No decir que Bruno limita al servidor. | AuthService.LoginAsync y JwtTokenService.CreateToken |
 | ¿El token guarda datos duplicados? | Los claims describen identidad; no se inserta un Usuario por petición. La contraseña no aparece en el JWT. | JwtTokenService y entidades Usuario/Cliente |
-| ¿Dónde frenan los duplicados? | Los Services verifican existencia y la base tiene índices únicos. El mismo correo, nombre de servicio o instante confirmado se rechaza según sus reglas. | AuthService, ServicioService, LavaderoDbContext |
+| ¿Dónde frenan los duplicados? | Los Services verifican existencia y la base tiene índices únicos. El mismo correo, nombre de servicio o intervalo superpuesto se rechaza según sus reglas. | AuthService, ServicioService, LavaderoDbContext |
 | ¿Qué pasa si falla la mitad del registro? | Cliente y Usuario se guardan dentro de una transacción para confirmar juntos o deshacer el intento. | UsuarioRepository.CreateClienteUserAsync |
 | ¿Bruno decide si una fecha es válida? | No. Genera un dato de prueba y lo envía. ValidateFuture y la consulta de disponibilidad están en la API. | TurnoService y TurnoRepository |
 | ¿Hay frontend? | Hay un prototipo y una API implementada. En esta defensa usamos Bruno para probar directamente el backend. | Alcance del Sistema y README |
@@ -24,3 +24,14 @@
 | ¿Todos los caminos están probados? | Hay escenarios concretos y trazabilidad. No afirmamos cobertura absoluta ni que las pruebas sustituyan la revisión humana. | TRAZABILIDAD.md y resultados de la suite |
 
 Las respuestas reflejan la implementación comprobada, no promesas de funcionalidades adicionales.
+
+## Correcciones del mockup y tiempos (31/10)
+
+| Pregunta | Respuesta que podemos sostener | Código para abrir |
+| --- | --- | --- |
+| ¿Por qué no pedimos nombre y teléfono al reservar? | Ya se guardaron en Cliente al registrarse. La reserva usa el cliente del token; el perfil se edita aparte. | AuthService; TurnoService.ResolveClienteId |
+| ¿Qué pasa si un lavado empieza 10:00 y otro 10:30? | Si el primero dura 60 minutos, el segundo se rechaza con 409. Se comprueba el intervalo completo, no la igualdad de inicio. | ExistsOverlappingAsync; triggers de la migración |
+| ¿Quién define la duración y calcula el fin? | El administrador configura duración en Servicio. La API la copia al turno y calcula su fin; el cliente no envía esos campos. | ServicioService; TurnoService.CreateAsync |
+| ¿Puedo reservar justo a las 11:00? | Sí, si el anterior termina exactamente a las 11:00. Usamos intervalos semiabiertos. | TurnoIntervalsTests.Reserva_ValidaIntervaloCompletoYPermiteAdyacentes |
+| ¿Cambiar un servicio mueve las reservas anteriores? | No. Conservan la duración copiada; al reprogramar se aplica la duración vigente del servicio elegido. | Turno.DuracionMinutos; prueba EditarDuracionDelCatalogo |
+| ¿Qué pasaba antes? | Se rechazaba solo la misma hora de inicio. Esa protección era insuficiente; la reemplazamos por intervalos y probamos colisiones con horas distintas, incluso simultáneas. | TurnoIntervalsTests |

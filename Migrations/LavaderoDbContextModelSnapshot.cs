@@ -33,6 +33,7 @@ partial class LavaderoDbContextModelSnapshot : ModelSnapshot
         {
             b.Property<Guid>("Id").HasColumnType("TEXT");
             b.Property<bool>("Activo").HasColumnType("INTEGER");
+            b.Property<int>("DuracionMinutos").HasColumnType("INTEGER");
             b.Property<decimal>("Importe").HasPrecision(12, 2).HasColumnType("TEXT");
             b.Property<string>("Nombre").IsRequired().HasMaxLength(150).HasColumnType("TEXT").UseCollation("NOCASE");
             b.HasKey("Id");
@@ -50,12 +51,14 @@ partial class LavaderoDbContextModelSnapshot : ModelSnapshot
             b.Property<int>("Estado").HasColumnType("INTEGER");
             b.Property<DateTime>("FechaCreacion").HasColumnType("TEXT");
             b.Property<DateTime>("FechaHora").HasColumnType("TEXT");
+            b.Property<DateTime>("FechaFin").HasColumnType("TEXT");
+            b.Property<int>("DuracionMinutos").HasColumnType("INTEGER");
             b.Property<Guid>("ServicioId").HasColumnType("TEXT");
             b.HasKey("Id");
             b.HasIndex("ClienteId");
             b.HasIndex("ServicioId");
             b.HasIndex("FechaHora").IsUnique().HasFilter("Estado = 1");
-            b.ToTable("Turnos");
+            b.ToTable("Turnos", t => { t.HasTrigger("TR_Turnos_NoOverlap_Insert"); t.HasTrigger("TR_Turnos_NoOverlap_Update"); });
         });
 
         modelBuilder.Entity("TurnosLavadero.DataAccess.Entities.Usuario", b =>

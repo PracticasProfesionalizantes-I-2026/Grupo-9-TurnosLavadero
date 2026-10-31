@@ -5,5 +5,7 @@ public sealed class ServicioResponseDTO
     public Guid Id { get; init; }
     public string Nombre { get; init; } = string.Empty;
     public decimal Importe { get; init; }
+
+    public int DuracionMinutos { get; init; } = 30;
     public bool Activo { get; init; }
 }
