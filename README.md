@@ -48,7 +48,7 @@ Definen el objetivo del sistema, los actores, permisos y restricciones de las op
 - [Casos de uso y trazabilidad](Documentos/Entregas%20TP/README.md)
 - [Guía de demostración y reparto de exposición](Documentos/Presentacion/GUIA-DEMO.md)
 - [Estado de entrega y revisión cruzada](Documentos/Presentacion/REVISION-Y-ENTREGA.md)
-- [Presentación PowerPoint](Documentos/Presentacion/TurnosLavadero-Grupo9.pptx)
+- [Presentación (PDF)](Documentos/Presentacion/TurnosLavadero-Grupo9.pdf)
 - [Guion de exposición](Documentos/Presentacion/GUION.md)
 
 La demo automática se ejecuta con `dotnet run --project tools/DemoRunner --` después de compilar. Usa JWT reales, SQLite temporal y SMTP local. La carpeta Bruno `00 Demo` permite mostrar cinco casos de uso en orden sin copiar IDs a mano.
