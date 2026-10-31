@@ -12,6 +12,7 @@ public interface ITurnoRepository
         DateTimeOffset to,
         CancellationToken cancellationToken = default);
     Task<bool> ExistsActiveAtAsync(DateTimeOffset fechaHora, Guid? excludeId = null, CancellationToken cancellationToken = default);
+    Task<bool> ExistsOverlappingAsync(DateTimeOffset inicio, DateTimeOffset fin, Guid? excludeId = null, CancellationToken cancellationToken = default);
     Task<Turno> CreateAsync(Turno turno, CancellationToken cancellationToken = default);
     Task UpdateAsync(Turno turno, CancellationToken cancellationToken = default);
 }

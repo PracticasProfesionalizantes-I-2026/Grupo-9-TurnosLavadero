@@ -1,0 +1,25 @@
+meta {
+  name: Servicio nombre espacios
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/servicios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {"nombre":"   ","importe":100}
+}
+
+tests {
+  test("HTTP 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

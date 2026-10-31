@@ -1,0 +1,21 @@
+meta {
+  name: Registro nombre espacios
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/auth/registro
+  body: json
+  auth: none
+}
+
+body:json {
+  {"nombre":"   ","apellido":"Prueba","email":"espacios-{{demoRun}}@example.test","password":"{{demoPassword}}"}
+}
+
+tests {
+  test("HTTP 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

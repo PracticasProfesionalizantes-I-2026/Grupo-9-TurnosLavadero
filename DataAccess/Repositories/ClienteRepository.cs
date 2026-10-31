@@ -29,13 +29,13 @@ public sealed class ClienteRepository(LavaderoDbContext context) : IClienteRepos
     {
         cliente.Id = cliente.Id == Guid.Empty ? Guid.NewGuid() : cliente.Id;
         context.Clientes.Add(cliente);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
         return cliente;
     }
 
     public async Task UpdateAsync(Cliente cliente, CancellationToken cancellationToken = default)
     {
         context.Clientes.Update(cliente);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
     }
 }

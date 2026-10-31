@@ -1,0 +1,25 @@
+meta {
+  name: Turno servicio inexistente
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"servicioId":"ffffffff-ffff-ffff-ffff-ffffffffffff","fechaHora":"{{demoFecha}}"}
+}
+
+tests {
+  test("HTTP 404", function () {
+    expect(res.status).to.equal(404);
+  });
+}

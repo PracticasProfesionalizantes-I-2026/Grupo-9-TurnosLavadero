@@ -15,7 +15,7 @@ public sealed class UsuarioRepository(LavaderoDbContext context) : IUsuarioRepos
     {
         usuario.Id = usuario.Id == Guid.Empty ? Guid.NewGuid() : usuario.Id;
         context.Usuarios.Add(usuario);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
         return usuario;
     }
 
@@ -32,7 +32,7 @@ public sealed class UsuarioRepository(LavaderoDbContext context) : IUsuarioRepos
 
         context.Clientes.Add(cliente);
         context.Usuarios.Add(usuario);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
         await transaction.CommitAsync(cancellationToken);
         return usuario;
     }
@@ -40,6 +40,6 @@ public sealed class UsuarioRepository(LavaderoDbContext context) : IUsuarioRepos
     public async Task UpdateAsync(Usuario usuario, CancellationToken cancellationToken = default)
     {
         context.Usuarios.Update(usuario);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
     }
 }

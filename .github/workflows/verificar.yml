@@ -1,7 +1,7 @@
 name: Verificar API y demostración
 on:
   push:
-    branches: [main, cierre-entrega-y-demo, demo-completamente-csharp]
+    branches: [main, cierre-entrega-y-demo, demo-completamente-csharp, preparar-defensa-bruno, corregir-mockup-contrato-api]
   pull_request:
 permissions:
   contents: read
@@ -13,10 +13,14 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --prefix "$RUNNER_TEMP/bruno-cli" @usebruno/cli@4.3.0 --no-audit --no-fund
       - run: dotnet restore TurnosLavadero.slnx
       - run: dotnet build TurnosLavadero.slnx --no-restore
       - run: dotnet test TurnosLavadero.slnx --no-build --logger trx --results-directory TestResults
-      - run: dotnet run --no-build --project tools/DemoRunner -- --output TestResults/demo
+      - run: dotnet run --no-build --project tools/DemoRunner -- --output TestResults/demo --bruno-cli "$RUNNER_TEMP/bruno-cli/node_modules/@usebruno/cli/bin/bru.js"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -11,6 +11,8 @@ public sealed class TurnoResponseDTO
     public string Servicio { get; init; } = string.Empty;
     public decimal Importe { get; init; }
     public DateTimeOffset FechaHora { get; init; }
+    public int DuracionMinutos { get; init; }
+    public DateTimeOffset FechaFin { get; init; }
     public EstadoTurno Estado { get; init; }
     public DateTimeOffset FechaCreacion { get; init; }
 }

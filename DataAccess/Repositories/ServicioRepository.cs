@@ -32,19 +32,19 @@ public sealed class ServicioRepository(LavaderoDbContext context) : IServicioRep
     {
         servicio.Id = servicio.Id == Guid.Empty ? Guid.NewGuid() : servicio.Id;
         context.Servicios.Add(servicio);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
         return servicio;
     }
 
     public async Task UpdateAsync(Servicio servicio, CancellationToken cancellationToken = default)
     {
         context.Servicios.Update(servicio);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
     }
 
     public async Task DeleteAsync(Servicio servicio, CancellationToken cancellationToken = default)
     {
         context.Servicios.Remove(servicio);
-        await context.SaveChangesAsync(cancellationToken);
+        await UniqueConstraintGuard.SaveChangesAsync(context, cancellationToken);
     }
 }

@@ -24,8 +24,8 @@ public sealed class TurnoServiceTests
             .ReturnsAsync(cliente);
         servicioRepository.Setup(x => x.GetByIdAsync(servicio.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(servicio);
-        turnoRepository.Setup(x => x.ExistsActiveAtAsync(
-                It.IsAny<DateTimeOffset>(), null, It.IsAny<CancellationToken>()))
+        turnoRepository.Setup(x => x.ExistsOverlappingAsync(
+                It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
         turnoRepository.Setup(x => x.CreateAsync(It.IsAny<Turno>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Turno turno, CancellationToken _) =>
@@ -82,8 +82,8 @@ public sealed class TurnoServiceTests
             .ReturnsAsync(cliente);
         servicioRepository.Setup(x => x.GetByIdAsync(servicio.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(servicio);
-        turnoRepository.Setup(x => x.ExistsActiveAtAsync(
-                It.IsAny<DateTimeOffset>(), null, It.IsAny<CancellationToken>()))
+        turnoRepository.Setup(x => x.ExistsOverlappingAsync(
+                It.IsAny<DateTimeOffset>(), It.IsAny<DateTimeOffset>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         var service = CreateService(

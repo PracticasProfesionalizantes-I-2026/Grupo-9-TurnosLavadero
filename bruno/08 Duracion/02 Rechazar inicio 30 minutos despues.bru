@@ -1,0 +1,23 @@
+meta {
+  name: Rechazar inicio 30 minutos despues
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"{{intervaloMedio}}"}
+}
+
+tests {
+  test("HTTP 409", function () { expect(res.status).to.equal(409);  });
+}

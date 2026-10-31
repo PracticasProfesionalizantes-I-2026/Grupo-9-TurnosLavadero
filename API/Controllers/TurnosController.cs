@@ -24,8 +24,10 @@ public sealed class TurnosController(ITurnoService turnoService) : ControllerBas
     [HttpGet("disponibilidad")]
     public Task<IActionResult> IsAvailable(
         [FromQuery] DateTimeOffset fechaHora,
+        [FromQuery] Guid servicioId,
+        [FromQuery] Guid? excludeId,
         CancellationToken cancellationToken) => ExecuteAsync(async () =>
-            Ok(new { disponible = await turnoService.IsAvailableAsync(fechaHora, cancellationToken) }));
+            Ok(new { disponible = await turnoService.IsAvailableAsync(fechaHora, servicioId, excludeId, cancellationToken) }));
 
     [HttpPost]
     public Task<IActionResult> Create(

@@ -1,0 +1,17 @@
+meta {
+  name: Acceso sin token
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/servicios
+  body: none
+  auth: none
+}
+
+tests {
+  test("HTTP 401", function () {
+    expect(res.status).to.equal(401);
+  });
+}

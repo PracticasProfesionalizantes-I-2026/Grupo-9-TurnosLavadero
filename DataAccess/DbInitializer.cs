@@ -65,6 +65,7 @@ public static class DbInitializer
                 {
                     Id = Guid.NewGuid(),
                     Nombre = "Lavado exterior",
+                    DuracionMinutos = 30,
                     Importe = 8000m,
                     Activo = true
                 },
@@ -72,6 +73,7 @@ public static class DbInitializer
                 {
                     Id = Guid.NewGuid(),
                     Nombre = "Lavado completo",
+                    DuracionMinutos = 60,
                     Importe = 15000m,
                     Activo = true
                 });
@@ -108,6 +110,7 @@ public static class DbInitializer
             Id = Guid.NewGuid(),
             ClienteId = clientes.First().Id,
             ServicioId = servicios.First().Id,
+            DuracionMinutos = servicios.First().DuracionMinutos,
             FechaHora = fechaHora,
             Estado = EstadoTurno.Confirmado,
             FechaCreacion = DateTimeOffset.UtcNow

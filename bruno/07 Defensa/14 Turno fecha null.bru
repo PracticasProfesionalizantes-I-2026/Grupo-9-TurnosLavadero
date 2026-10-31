@@ -1,0 +1,25 @@
+meta {
+  name: Turno fecha null
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":null}
+}
+
+tests {
+  test("HTTP 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

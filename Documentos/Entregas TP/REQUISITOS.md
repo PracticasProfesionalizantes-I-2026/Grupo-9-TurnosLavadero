@@ -7,7 +7,7 @@ Este catálogo resume el alcance implementado para la exposición. Los criterios
 | ID | Requerimiento | Caso de uso | Endpoint | Evidencia |
 | --- | --- | --- | --- | --- |
 | RF-01 | Registrar un cliente con cuenta propia y correo único. | CU-07 | `POST /api/auth/registro` | `AuthAndClientes_RegisterLoginDuplicateAndUpdate` |
-| RF-02 | Reservar un servicio activo en un instante futuro disponible para el cliente autenticado. | CU-01 | `POST /api/turnos` | `SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
+| RF-02 | Reservar un servicio activo en un instante futuro disponible para el cliente autenticado. | CU-01 / CU-03 | `POST /api/turnos` | `SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
 | RF-03 | Reprogramar un turno propio confirmado y futuro, verificando disponibilidad. | CU-04 | `PUT /api/turnos/{id}` | `UpdateTurno_ValidatesRulesAndPreservesOriginalOnError` |
 | RF-04 | Cancelar un turno propio conservando el historial y liberando el horario. | CU-05 | `DELETE /api/turnos/{id}` | `CancelTurno_PreservesHistoryAndReleasesSlot` |
 | RF-05 | Administrar servicios con nombre único e importe positivo, protegiendo los relacionados con turnos. | CU-06 | `POST`, `PUT`, `DELETE /api/servicios` | `Servicios_UpdateDeleteAndProtectRelatedService` |
@@ -27,3 +27,17 @@ Como soporte se implementan login, consulta de servicios, disponibilidad, turnos
 ## Evidencia ejecutable
 
 `dotnet run --project tools/DemoRunner --` levanta una base temporal, usa autenticación real y captura un correo en SMTP local. Verifica respuestas y genera `TestResults/demo/demo.html` y `resultados.json`. No contiene credenciales reales ni envía a casillas externas. La CI ejecuta compilación, pruebas y demo, y conserva los resultados como artefactos.
+
+## Funciones de apoyo identificadas
+
+| ID | Función | Caso de uso |
+| --- | --- | --- |
+| RF-06 | Iniciar sesión | CU-08 |
+| RF-07 | Consultar disponibilidad | CU-09 |
+| RF-08 | Consultar turnos propios | CU-10 |
+| RF-09 | Consultar agenda diaria | CU-11 |
+| RF-10 | Gestionar datos de clientes | CU-12 |
+| RF-11 | Consultar servicios | CU-13 |
+| RF-12 | Procesar recordatorios | CU-02 |
+
+La correspondencia completa y las ubicaciones del código están en [MAPA-DEFENSA.md](MAPA-DEFENSA.md). Para la exposición se priorizan Bruno, autenticación real, validaciones y comprobación de que los rechazos no modifican la base.

@@ -29,7 +29,7 @@ public sealed class AgendaAndConcurrencyTests
         var turnos = new[] { midnight.AddTicks(-1), midnight, midnight.AddDays(1).AddTicks(-1), midnight.AddDays(1) }
             .Select(fecha => new Turno { Id = Guid.NewGuid(), ClienteId = cliente.Id,
                 ServicioId = servicio.Id, FechaHora = fecha, FechaCreacion = DateTimeOffset.UtcNow,
-                Estado = EstadoTurno.Confirmado }).ToArray();
+                Estado = EstadoTurno.Cancelado }).ToArray();
         db.Turnos.AddRange(turnos);
         await db.SaveChangesAsync();
 

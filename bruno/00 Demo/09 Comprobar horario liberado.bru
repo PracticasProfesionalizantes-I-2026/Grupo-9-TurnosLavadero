@@ -1,11 +1,11 @@
 meta {
   name: Comprobar horario liberado
   type: http
-  seq: 8
+  seq: 9
 }
 
 get {
-  url: {{baseUrl}}/api/turnos/disponibilidad?fechaHora={{demoNuevaFecha}}
+  url: {{baseUrl}}/api/turnos/disponibilidad?servicioId={{servicioId}}&fechaHora={{demoNuevaFecha}}
   body: none
   auth: bearer
 }

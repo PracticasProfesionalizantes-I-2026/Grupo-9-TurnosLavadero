@@ -23,6 +23,7 @@ public sealed class LavaderoDbContext(DbContextOptions<LavaderoDbContext> option
             value => value.UtcDateTime,
             value => new DateTimeOffset(DateTime.SpecifyKind(value, DateTimeKind.Utc)));
         modelBuilder.Entity<Turno>().Property(x => x.FechaHora).HasConversion(utcConverter);
+        modelBuilder.Entity<Turno>().Property(x => x.FechaFin).HasConversion(utcConverter);
         modelBuilder.Entity<Turno>().Property(x => x.FechaCreacion).HasConversion(utcConverter);
         modelBuilder.Entity<Recordatorio>().Property(x => x.FechaProgramada).HasConversion(utcConverter);
         modelBuilder.Entity<Recordatorio>().Property(x => x.FechaProcesada).HasConversion(utcConverter);
@@ -50,7 +51,11 @@ public sealed class LavaderoDbContext(DbContextOptions<LavaderoDbContext> option
 
         modelBuilder.Entity<Turno>(entity =>
         {
-            entity.ToTable("Turnos");
+            entity.ToTable("Turnos", table =>
+            {
+                table.HasTrigger("TR_Turnos_NoOverlap_Insert");
+                table.HasTrigger("TR_Turnos_NoOverlap_Update");
+            });
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Estado).HasConversion<int>();
             entity.HasIndex(x => x.FechaHora)

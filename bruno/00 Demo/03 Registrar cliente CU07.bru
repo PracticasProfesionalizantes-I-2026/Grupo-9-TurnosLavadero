@@ -11,16 +11,12 @@ post {
 }
 
 body:json {
-  {"nombre":"Cliente","apellido":"Demo","email":"demo-{{demoRun}}@example.test","password":"{{demoPassword}}"}
+  {"nombre":"Cliente","apellido":"Demo","email":"{{demoEmail}}","password":"{{demoPassword}}"}
 }
 
-script:pre-request {
-  bru.setEnvVar("demoPassword", "Demo-" + Date.now().toString() + "-" + Math.random().toString(36).slice(2));
-}
 
 script:post-response {
   if (res.status === 201) {
-    bru.setEnvVar("token", res.body.token);
     bru.setEnvVar("clienteId", res.body.clienteId);
   }
 }

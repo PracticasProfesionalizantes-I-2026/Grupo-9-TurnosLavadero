@@ -18,7 +18,7 @@ Comprobar si una fecha y hora están disponibles.
 - Actor autenticado; fecha y hora futuras.
 
 ### 3. FLUJO PRINCIPAL (Camino Feliz)
-1. El actor envía `GET /api/turnos/disponibilidad?fechaHora=<ISO-8601>`. Datos: fechaHora con zona horaria.
+1. El actor envía `GET /api/turnos/disponibilidad?servicioId=&fechaHora=<ISO-8601>`. Datos: fechaHora con zona horaria.
 2. La Capa de Presentación valida el formato y, si corresponde, la autenticación.
 3. La Capa de Negocio (`TurnoService.IsAvailableAsync`) aplica permisos y validaciones.
 4. La Capa de Persistencia: Se consulta si existe un turno confirmado en ese instante; no se cambia la base.
@@ -61,3 +61,7 @@ La prueba HTTP recorre las capas de forma integrada. Reutilizarla en varias fila
 | 3 | Sin prueba aislada por paso | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
 | 4 | Sin prueba aislada por paso | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
 | 5 | Sin prueba aislada por paso | `CasosDeUsoTests.CancelTurno_PreservesHistoryAndReleasesSlot` |
+
+## Corrección de intervalos - 31/10/2026
+
+El servicio elegido define la duración. La API comprueba `[inicio, fin)` completo contra turnos confirmados; horarios de inicio distintos pueden entrar en conflicto. Al reservar o reprogramar se persisten duración y fin. La consulta de disponibilidad recibe `servicioId` y `fechaHora`; para modificar recibe `excludeId` y verifica permiso sobre ese turno. Los turnos adyacentes se permiten. No se vuelven a pedir nombre, teléfono ni correo al reservar: se reutiliza Cliente.

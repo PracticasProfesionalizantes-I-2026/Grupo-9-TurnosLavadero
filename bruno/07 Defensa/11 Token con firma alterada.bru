@@ -1,0 +1,27 @@
+meta {
+  name: Token con firma alterada
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/servicios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAlterado}}
+}
+
+script:pre-request {
+  const parts = bru.getEnvVar("clienteToken").split(".");
+  parts[2] = (parts[2][0] === "A" ? "B" : "A") + parts[2].slice(1);
+  bru.setVar("tokenAlterado", parts.join("."));
+}
+
+tests {
+  test("HTTP 401", function () {
+    expect(res.status).to.equal(401);
+  });
+}

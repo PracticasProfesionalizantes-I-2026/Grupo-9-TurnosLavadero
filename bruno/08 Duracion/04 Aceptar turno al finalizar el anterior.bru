@@ -1,0 +1,27 @@
+meta {
+  name: Aceptar turno al finalizar el anterior
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"{{intervaloFin}}"}
+}
+
+script:post-response {
+  if (res.status===201) bru.setEnvVar("intervaloAdyacenteId", res.body.id);
+}
+
+tests {
+  test("HTTP 201", function () { expect(res.status).to.equal(201);  });
+}
