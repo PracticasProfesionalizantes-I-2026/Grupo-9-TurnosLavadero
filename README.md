@@ -36,7 +36,7 @@ Definen el objetivo del sistema, los actores, permisos y restricciones de las op
 
 ## 🖥️ Prototipo y API
 
-- [Nuevo mockup: pantallas y contrato](Documentos/Mockup/README.md)
+- [Mockup (PDF)](Documentos/Mockup/Mockup-TurnosLavadero.pdf)
 - **API:** ASP.NET Core / .NET 10, Entity Framework Core y SQLite.
 - **Autenticación:** JWT con roles Cliente, Empleado y Administrador.
 - **Pruebas manuales:** colección [Bruno](bruno/).
@@ -65,11 +65,3 @@ La exposición usa **Bruno**, con un login por actor y reutilización del token.
 - [Guion de 25 minutos con texto para ambos integrantes](Documentos/Presentacion/GUION.md)
 - [Preguntas y respuestas para preparar la defensa](Documentos/Presentacion/PREGUNTAS-DEFENSA.md)
 - [Evidencia de validaciones, JWT reales y Bruno](Documentos/Presentacion/Evidencia/DEFENSA-28-10.md)
-
-## Corrección del mockup y duración - 31/10/2026
-
-El [nuevo mockup](Documentos/Mockup/README.md) sustituye al anterior: registro una sola vez, login con correo/contraseña y reserva sin repetir contacto. El [contrato pantalla → DTO → base](Documentos/Mockup/CONTRATO-PANTALLAS.md) permite comprobar dónde se guarda cada dato.
-
-Cada servicio tiene duración en minutos; los turnos guardan una copia de esa duración y su fin. La disponibilidad y las reservas validan todo el intervalo, incluso ante solicitudes simultáneas. Se permite iniciar otro turno exactamente cuando termina el anterior. La consulta de disponibilidad requiere `servicioId` además de `fechaHora`; al modificar admite `excludeId`, con permisos sobre el turno.
-
-La migración no borra datos: asigna 30 minutos como valor de transición y se detiene si descubre reservas previas superpuestas. Revisar el catálogo y los turnos existentes según la [guía de migración](Documentos/Mockup/README.md#migración-de-bases-existentes). La carpeta Bruno `08 Duracion` demuestra los nuevos casos después de `00 Demo` y `07 Defensa`.
