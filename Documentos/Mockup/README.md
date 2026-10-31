@@ -2,7 +2,7 @@
 
 Este diseño reemplaza el mockup anterior como referencia funcional. Es un prototipo visual de la futura interfaz, no un frontend conectado. Se conserva la identidad OPTIMUS TURN y se reconstruye el flujo a partir de los casos de uso corregidos.
 
-- [Ver las 12 pantallas en PDF](Mockup-TurnosLavadero.pdf).
+- [Ver el nuevo diseño en PDF](Mockup-TurnosLavadero.pdf).
 - [Abrir la lámina SVG](Mockup-TurnosLavadero.svg).
 - [Descargar el archivo editable de Excalidraw](Mockup-TurnosLavadero.excalidraw). En Excalidraw, usar Abrir y seleccionar el archivo descargado. No depende de que alguien mantenga una sala colaborativa abierta.
 - [Campos, endpoints y persistencia](CONTRATO-PANTALLAS.md).
@@ -35,10 +35,16 @@ Si ese valor revela superposiciones en reservas antiguas, la migración se detie
 
 ## Recorrido de pantallas
 
-Registro o login → reservar → confirmación → mis turnos → modificar o cancelar. Mi perfil se utiliza para actualizar datos personales. El personal accede a agenda, clientes y creación de turnos; solo el administrador gestiona servicios. La pantalla 12 reúne estados alternativos y no es un formulario adicional.
+Registro o login → reservar → confirmación → mis turnos → modificar o cancelar. Mi perfil se utiliza para actualizar datos personales. El personal accede a agenda, clientes y creación de turnos; solo el administrador gestiona servicios. Los errores se muestran en contexto, sin una pantalla independiente de error.
 
-En la pantalla 05, la confirmación y el mensaje de cancelación son estados sucesivos del mismo flujo: el diálogo se abre al pulsar Cancelar y el mensaje aparece solo después de un 204.
+En Mis turnos, Cancelar abre una confirmación breve; solo después del 204 se actualiza el estado. Modificar reutiliza el formulario de reserva precargado, sin repetir el perfil. Nuevo turno desde la agenda utiliza ese formulario con selector de cliente.
 
 ## Verificación en Bruno
 
 Ejecutar `00 Demo`, `07 Defensa` y `08 Duracion` en ese orden con DemoLocal. `00 Demo/02` crea un servicio de 60 minutos. `08 Duracion` prueba inicios diferentes que se superponen, el límite exacto y la liberación al cancelar. `07 Defensa/17` demuestra que los datos sin campo persistido en el contrato de turnos se rechazan con 400 en vez de ignorarse.
+
+## Revisión visual
+
+Diseño OPTIMUS TURN en azul, blanco y azul oscuro, con tarjetas de cliente y menú lateral para el personal. Nueve vistas principales en cuatro láminas. Se quitaron pantallas redundantes, notas técnicas dentro de la interfaz y la página de errores. El formulario de reserva se reutiliza para modificar; el personal lo usa con un selector de cliente existente.
+
+La hoja de contrato contiene las variantes de alta/edición, permisos y confirmaciones que no necesitan repetirse como pantallas completas. El rediseño visual no modifica los endpoints ni las reglas de duración y superposición.

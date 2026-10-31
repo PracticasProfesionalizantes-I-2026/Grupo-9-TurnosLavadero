@@ -1,19 +1,18 @@
 # Correspondencia de pantallas, datos y API
 
-| Pantalla | Operación HTTP | Entrada de la interfaz | Dónde queda o de dónde se obtiene |
-| --- | --- | --- | --- |
-| 01 Crear cuenta | POST /api/auth/registro | nombre, apellido, email, password, telefono opcional | Cliente: nombre, apellido, emailContacto y telefono. Usuario: email y passwordHash; nunca password en claro. |
-| 02 Login | POST /api/auth/login | email, password | Verifica Usuario; devuelve JWT y clienteId. No vuelve a crear Cliente. |
-| 03 Reservar | GET /api/servicios; GET /api/clientes/{clienteId}; GET /api/turnos/disponibilidad?servicioId=&fechaHora=; POST /api/turnos | servicioId, fechaHora con offset -03:00 | ClienteId desde JWT; Turno guarda servicioId, inicio UTC, duración copiada, fin UTC, Confirmado y auditoría. Nombre y teléfono se leen de Cliente. |
-| 04 Confirmación | Respuesta 201 de POST /api/turnos | Ningún dato adicional | Mostrar id, cliente, servicio, fechaHora, fechaFin, duracionMinutos, importe y estado devueltos. Nunca confirmar antes del 201. |
-| 05 Mis turnos / cancelar | GET /api/turnos/mis-turnos; DELETE /api/turnos/{id} | Solo id del turno seleccionado al cancelar | Consulta por el claim; cancelación cambia estado y conserva historial. Refrescar lista después del 204. |
-| 06 Modificar | GET disponibilidad con servicioId, fechaHora y excludeId; PUT /api/turnos/{id} | servicioId y nueva fechaHora; id en ruta | Revalida permiso e intervalo; persiste duración vigente y fin recalculado. No cambia el cliente. |
-| 07 Mi perfil | GET y PUT /api/clientes/{clienteId} | nombre, apellido, emailContacto, telefono, notificacionesHabilitadas | Cliente. El PUT actual exige también activo: la interfaz conserva el valor leído sin mostrar un control al cliente. Correo de contacto no cambia Usuario.Email. |
-| 08 Agenda | GET /api/turnos/agenda?fecha= | Día local, formato yyyy-MM-dd | La API resuelve límites del día argentino y devuelve inicio/fin, cliente, servicio y estado. |
-| 09 Servicios | POST /api/servicios; PUT y DELETE /api/servicios/{id} | nombre, importe, duracionMinutos; activo en PUT | Servicio. Duración entero 1..480; importe positivo; nombre único. Rol Administrador. |
-| 10 Turno para cliente | GET /api/clientes; POST /api/turnos | clienteId seleccionado, servicioId, fechaHora | El personal selecciona el cliente existente; no repite contacto en la reserva. |
-| 11 Clientes | GET /api/clientes; POST /api/clientes; PUT /api/clientes/{id} | nombre, apellido, emailContacto, telefono, notificacionesHabilitadas; activo en PUT | Cliente. El alta por personal no crea contraseña ni cuenta Usuario. La identidad de acceso y el contacto son responsabilidades distintas. |
-| 12 Estados alternativos | Respuestas de las operaciones anteriores | No recoge datos | 400 entrada; 401 sesión; 403 permiso; 404 recurso; 409 conflicto. Mostrar mensajes de la API sin recrear reglas de negocio. |
+| Vista | Operación HTTP | Datos y persistencia |
+| --- | --- | --- |
+| 01 Iniciar sesión | POST /api/auth/login | Solo email y password. Verifica Usuario y devuelve token y clienteId. |
+| 02 Crear cuenta | POST /api/auth/registro | nombre, apellido, email, password y telefono opcional. Guarda perfil en Cliente e identidad/hash en Usuario. |
+| 03 Reservar turno | GET /api/servicios; GET /api/turnos/disponibilidad?servicioId=&fechaHora=; POST /api/turnos | servicioId y fechaHora. Cliente desde JWT; la API guarda duración y fin. Duración e importe son datos de catálogo, no campos que completar. |
+| 04 Turno confirmado | Respuesta 201 del alta | Muestra fechaHora, fechaFin, duracionMinutos, servicio, importe y estado. No pide datos. |
+| 05 Mis turnos | GET /api/turnos/mis-turnos; DELETE /api/turnos/{id} | Solo propios. Cancelar abre confirmación y actualiza después del 204. Modificar abre el formulario 03 precargado, guarda con PUT /api/turnos/{id} y consulta disponibilidad con excludeId autorizado. |
+| 06 Mi perfil | GET y PUT /api/clientes/{clienteId} | nombre, apellido, emailContacto, telefono y notificacionesHabilitadas. Conserva activo de la lectura, sin exponerlo al cliente. Cambiar contacto no cambia el correo de acceso. |
+| 07 Agenda diaria | GET /api/turnos/agenda?fecha= | Día argentino; muestra intervalos, cliente, servicio y estado. Nuevo turno abre el formulario 03 con clienteId seleccionado de GET /api/clientes; si es nuevo, se crea primero en Clientes. |
+| 08 Gestionar servicios | POST /api/servicios; PUT y DELETE /api/servicios/{id} | nombre, importe, duracionMinutos y activo al editar. Solo administrador. Eliminar se permite si no existen turnos asociados; en otro caso se puede desactivar. |
+| 09 Gestionar clientes | GET y POST /api/clientes; PUT /api/clientes/{id} | nombre, apellido, emailContacto, telefono, notificacionesHabilitadas y activo al editar. Personal. El alta no crea una contraseña ni Usuario. |
+
+Los formularios de gestión se muestran con un registro seleccionado. La selección/lista devuelve los recursos de los endpoints GET; Guardar decide alta o actualización según exista id. Activo y Eliminar corresponden a edición, no a un alta nueva. Los errores 400/401/403/404/409 se muestran junto a la operación, sin una página adicional. La revisión estética no modifica el contrato.
 
 ## Qué se envía para reservar
 
