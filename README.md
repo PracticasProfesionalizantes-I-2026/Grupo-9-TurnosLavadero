@@ -56,12 +56,3 @@ La demo automática se ejecuta con `dotnet run --project tools/DemoRunner --` de
 Evidencia de la revisión del 28/10: **127 pruebas C# aprobadas** y **25 peticiones de Bruno aprobadas**. [Resultados y límites](Documentos/Presentacion/Evidencia/DEFENSA-28-10.md).
 
 La API, las pruebas automatizadas y la demo de consola están implementadas en **C# con .NET 10**.
-
-## Defensa revisada el 28/10/2026
-
-La exposición usa **Bruno**, con un login por actor y reutilización del token. La carpeta `07 Defensa` permite mostrar null, espacios, duplicados, 401, 403 y fechas inválidas.
-
-- [Mapa de requerimientos, trece casos de uso, código y pruebas](Documentos/Entregas%20TP/MAPA-DEFENSA.md)
-- [Guion de 25 minutos con texto para ambos integrantes](Documentos/Presentacion/GUION.md)
-- [Preguntas y respuestas para preparar la defensa](Documentos/Presentacion/PREGUNTAS-DEFENSA.md)
-- [Evidencia de validaciones, JWT reales y Bruno](Documentos/Presentacion/Evidencia/DEFENSA-28-10.md)
