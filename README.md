@@ -42,17 +42,7 @@ Definen el objetivo del sistema, los actores, permisos y restricciones de las op
 - **Pruebas manuales:** colección [Bruno](bruno/).
 - **Documentación interactiva local:** Scalar en `http://localhost:5088/scalar/v1` al ejecutar la API en desarrollo.
 
-## Entrega y exposición
+## Presentación
 
-- [Cinco RF y cinco RNF con evidencia](Documentos/Entregas%20TP/REQUISITOS.md)
-- [Casos de uso y trazabilidad](Documentos/Entregas%20TP/README.md)
-- [Guía de demostración y reparto de exposición](Documentos/Presentacion/GUIA-DEMO.md)
-- [Estado de entrega y revisión cruzada](Documentos/Presentacion/REVISION-Y-ENTREGA.md)
 - [Presentación (PDF)](Documentos/Presentacion/TurnosLavadero-Grupo9.pdf)
-- [Guion de exposición](Documentos/Presentacion/GUION.md)
 
-La demo automática se ejecuta con `dotnet run --project tools/DemoRunner --` después de compilar. Usa JWT reales, SQLite temporal y SMTP local. La carpeta Bruno `00 Demo` permite mostrar cinco casos de uso en orden sin copiar IDs a mano.
-
-Evidencia de la revisión del 28/10: **127 pruebas C# aprobadas** y **25 peticiones de Bruno aprobadas**. [Resultados y límites](Documentos/Presentacion/Evidencia/DEFENSA-28-10.md).
-
-La API, las pruebas automatizadas y la demo de consola están implementadas en **C# con .NET 10**.
