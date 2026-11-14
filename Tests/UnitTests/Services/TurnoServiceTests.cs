@@ -200,6 +200,40 @@ public sealed class TurnoServiceTests
         await Assert.ThrowsAsync<TurnoNoCancelableException>(() => service.CancelAsync(turno.Id));
     }
 
+    [Theory]
+    [InlineData(-1, -180)] [InlineData(0, -180)] [InlineData(1, -180)]
+    [InlineData(-1, 0)] [InlineData(0, 0)] [InlineData(1, 0)]
+    [InlineData(-1, 330)] [InlineData(0, 330)] [InlineData(1, 330)]
+    public async Task FechaFutura_UsaInstanteUtcDelServidorSinTolerancia(int ticks, int offsetMinutes)
+    {
+        var cliente = CreateCliente();
+        var servicio = CreateServicio();
+        var turnos = new Mock<ITurnoRepository>();
+        var clientes = new Mock<IClienteRepository>();
+        var servicios = new Mock<IServicioRepository>();
+        clientes.Setup(x => x.GetByIdAsync(cliente.Id, It.IsAny<CancellationToken>())).ReturnsAsync(cliente);
+        servicios.Setup(x => x.GetByIdAsync(servicio.Id, It.IsAny<CancellationToken>())).ReturnsAsync(servicio);
+        turnos.Setup(x => x.CreateAsync(It.IsAny<Turno>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Turno turno, CancellationToken _) => turno);
+        var service = CreateService(turnos, clientes, servicios,
+            new ActorContextStub { Rol = RolUsuario.Cliente, ClienteId = cliente.Id });
+        var dto = new TurnoCreateDTO { ServicioId = servicio.Id,
+            FechaHora = Now.AddTicks(ticks).ToOffset(TimeSpan.FromMinutes(offsetMinutes)) };
+
+        if (ticks <= 0)
+        {
+            await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(dto));
+            turnos.Verify(x => x.CreateAsync(It.IsAny<Turno>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
+        else
+        {
+            var saved = await service.CreateAsync(dto);
+            Assert.Equal(Now.AddTicks(ticks), saved.FechaHora);
+            Assert.Equal(TimeSpan.Zero, saved.FechaHora.Offset);
+            turnos.Verify(x => x.CreateAsync(It.IsAny<Turno>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+    }
+
     private static TurnoService CreateService(
         Mock<ITurnoRepository> turnoRepository,
         Mock<IClienteRepository> clienteRepository,

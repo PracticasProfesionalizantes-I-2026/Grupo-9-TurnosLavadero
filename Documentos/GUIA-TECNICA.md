@@ -215,4 +215,6 @@ Servicios de alta/edición: agregar `duracionMinutos`, entero entre 1 y 480; si 
 
 Consultar disponibilidad con `GET /api/turnos/disponibilidad?servicioId=GUID&fechaHora=FECHA-CON-OFFSET`. Para reprogramar, agregar `excludeId=GUID-DEL-TURNO`; se verifica autorización antes de excluirlo. La respuesta sigue siendo `{ "disponible": true/false }`. Consultar no reserva: el alta y la modificación vuelven a comprobar y SQLite protege la escritura simultánea.
 
+En alta, edición y disponibilidad, `fechaHora` requiere ISO 8601 con `Z` u offset explícito (`-03:00`, por ejemplo); sin zona devuelve 400. En query strings, codificar el signo `+` como `%2B`. Se convierte a UTC y se exige un instante estrictamente posterior al reloj del servidor, sin tolerancia para el pasado. Un cliente que envíe un `clienteId` ajeno recibe 403 antes de invocar el servicio, que también verifica pertenencia.
+
 Los cuerpos de alta/edición de turnos y servicios rechazan propiedades fuera de su DTO con 400, evitando una aceptación aparente de datos que no se guardarían. Ver el [nuevo mockup y la migración](Mockup/README.md).

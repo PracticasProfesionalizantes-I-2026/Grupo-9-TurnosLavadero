@@ -120,7 +120,7 @@ try
             WorkingDirectory = Path.Combine(root.FullName, "bruno"), UseShellExecute = false,
             RedirectStandardOutput = true, RedirectStandardError = true
         };
-        foreach (var argument in new[] { Path.GetFullPath(brunoCli), "run", "00 Demo", "07 Defensa", "08 Duracion",
+        foreach (var argument in new[] { Path.GetFullPath(brunoCli), "run", "00 Demo", "07 Defensa", "08 Duracion", "09 Riesgo alto",
             "--env-file", environmentFile, "--noproxy", "--reporter-json", Path.Combine(output, "bruno.json"),
             "--reporter-skip-all-headers", "--reporter-skip-body" }) brunoStart.ArgumentList.Add(argument);
         using var bruno = Process.Start(brunoStart) ?? throw new InvalidOperationException("No se pudo iniciar Bruno CLI.");
@@ -130,7 +130,7 @@ try
         var report = await standardOutput + "\n" + await standardError;
         await File.WriteAllTextAsync(Path.Combine(output, "bruno.txt"), report);
         Require(bruno.ExitCode == 0, "Falló la colección Bruno. Consultar bruno.txt.");
-        Console.WriteLine("Bruno CLI: carpetas 00 Demo, 07 Defensa y 08 Duracion aprobadas. Ver bruno.txt.");
+        Console.WriteLine("Bruno CLI: carpetas 00 Demo, 07 Defensa, 08 Duracion y 09 Riesgo alto aprobadas. Ver bruno.txt.");
     }
     var summary = new { fechaUtc = DateTimeOffset.UtcNow, implementacion = "C# / .NET 10", pasos = steps,
         correosCapturadosLocalmente = smtp.Messages.Count, entregaExterna = false };

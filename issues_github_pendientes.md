@@ -2,17 +2,19 @@
 
 ## 🔴 RIESGO ALTO (Crítico)
 
-- [ ] **API/Controllers/TurnosController.cs:66** – `Create` retorna `201` aun cuando el DTO contiene `ClienteId` que no pertenece al cliente autenticado (validación delegada a `ResolveClienteId`).
+- [x] **API/Controllers/TurnosController.cs:66** – `Create` retorna `201` aun cuando el DTO contiene `ClienteId` que no pertenece al cliente autenticado (validación delegada a `ResolveClienteId`).
   **Acción:** Añadir validación explícita de `ClienteId` en el controlador o devolver 400 antes de llamar al service.
 
-- [ ] **BusinessLogic/Services/TurnoService.cs:199‑205** – `ValidateFuture` solo comprueba que la fecha sea futura respecto a `clock.UtcNow`. No valida zona horaria ni posibles *clock skew* en clientes.
+- [x] **BusinessLogic/Services/TurnoService.cs:199‑205** – `ValidateFuture` solo comprueba que la fecha sea futura respecto a `clock.UtcNow`. No valida zona horaria ni posibles *clock skew* en clientes.
   **Acción:** Documentar y/o limitar tolerancia (p.e. ±5 min) o usar `DateTimeOffset.UtcNow` directamente.
 
-- [ ] **DataAccess/Repositories/TurnoRepository.cs (no incluido en la revisión)** – Falta test unitario que compruebe que el índice único de `FechaHora` + `ServicioId` impida solapamientos.
+- [x] **DataAccess/Repositories/TurnoRepository.cs (no incluido en la revisión)** – Falta test unitario que compruebe que el índice único de `FechaHora` + `ServicioId` impida solapamientos.
   **Acción:** Añadir prueba de integridad de base de datos y asegurar que la migración crea el índice correcto.
 
-- [ ] **Shared/Exceptions/*.cs** – Algunas excepciones (`HorarioNoDisponibleException`, `TurnoNoModificableException`) no están marcadas como `sealed`.
+- [x] **Shared/Exceptions/*.cs** – Algunas excepciones (`HorarioNoDisponibleException`, `TurnoNoModificableException`) no están marcadas como `sealed`.
   **Acción:** Declarar `sealed` para evitar herencia innecesaria y reducir superficie de ataque.
+
+**Verificación de cierre (#6–#9):** `TurnosControllerTests` comprueba 403 antes de invocar negocio; `HighRiskApiTests` verifica JWT real, rechazo de fechas sin zona y normalización UTC; `TurnoServiceTests` comprueba tolerancia temporal cero. `TurnoPersistenceIntegrityTests` usa SQLite migrado real y verifica índice y triggers. La agenda es única: el índice filtra turnos confirmados por `FechaHora`, sin `ServicioId`, para impedir que servicios distintos ocupen el mismo horario; los triggers también impiden intervalos solapados con distinto inicio. Todas las excepciones ya eran `sealed`; `DomainExceptionContractTests` deja comprobado ese contrato. Evidencia detallada en la trazabilidad existente.
 
 ## 🟡 RIESGO MEDIO (Mantenibilidad)
 

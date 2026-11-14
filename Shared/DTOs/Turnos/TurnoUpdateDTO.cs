@@ -12,5 +12,6 @@ public sealed class TurnoUpdateDTO
     public Guid ServicioId { get; init; }
 
     [Required, NotDefault]
+    [JsonConverter(typeof(ExplicitOffsetDateTimeOffsetConverter))]
     public DateTimeOffset FechaHora { get; init; }
 }

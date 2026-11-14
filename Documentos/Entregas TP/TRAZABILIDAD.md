@@ -4,6 +4,10 @@ Las referencias siguientes corresponden a pruebas existentes. Los escenarios de 
 
 | Caso de uso | Flujo o regla | Prueba |
 | --- | --- | --- |
+| CU-01 / #6 | Cliente ajeno o claim ausente: 403 antes del servicio; JWT real no inserta datos | `TurnosControllerTests`, `HighRiskApiTests.JwtReal_ClienteAjenoDevuelve403SinInsertar` |
+| CU-01 / CU-04 / CU-09 / #7 | Zona explícita obligatoria; UTC y límite estricto del reloj del servidor | `HighRiskApiTests`, `TurnoServiceTests.FechaFutura_UsaInstanteUtcDelServidorSinTolerancia` |
+| RN-01 / #8 | Migración real, índice único filtrado y triggers: ni otro servicio ni una escritura directa evitan la protección | `TurnoPersistenceIntegrityTests` (SQLite real, no mocks), `TurnoIntervalsTests.SolicitudesSimultaneas_ConDistintoInicioSolapado_SoloUnaSeGuarda` |
+| Transversal / #9 | Todas las excepciones de dominio son sealed | `DomainExceptionContractTests.TodasLasExcepcionesDeDominio_SonSealed` |
 | CU-01 / CU-03 | Creación y conflicto de horario | `ApiEndpointsTests.Turnos_MismoHorario_Devuelve201Luego409` |
 | CU-01 | Reserva propia y rechazo de cliente ajeno | `CasosDeUsoTests.SolicitarTurno_ClienteUsesTokenAndCannotChooseAnotherClient` |
 | CU-01 / CU-03 | JSON inválido o datos faltantes | `CasosDeUsoTests.CreateTurno_InvalidBody_Returns400` |
