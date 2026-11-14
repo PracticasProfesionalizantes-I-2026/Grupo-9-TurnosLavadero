@@ -198,6 +198,9 @@ public sealed class TurnoService(
 
     private DateTimeOffset ValidateFuture(DateTimeOffset value)
     {
+        // El offset identifica un instante, no se compara la hora local del cliente.
+        // IClock usa el UTC del servidor. Tolerancia de reserva: cero, para no
+        // aceptar turnos pasados aunque el reloj del dispositivo esté desfasado.
         var utcDate = value.ToUniversalTime();
         if (utcDate <= clock.UtcNow)
         {

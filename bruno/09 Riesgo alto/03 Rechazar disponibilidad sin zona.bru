@@ -1,0 +1,19 @@
+meta {
+  name: Rechazar disponibilidad sin zona horaria
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/turnos/disponibilidad?servicioId={{servicioId}}&fechaHora=2099-01-10T12:00:00
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+tests {
+  test("Consulta ambigua: HTTP 400", function () { expect(res.status).to.equal(400); });
+}

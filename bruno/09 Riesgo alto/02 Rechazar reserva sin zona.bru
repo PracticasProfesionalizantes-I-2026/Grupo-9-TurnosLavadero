@@ -1,0 +1,23 @@
+meta {
+  name: Rechazar reserva sin zona horaria
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"servicioId":"{{servicioId}}","fechaHora":"2099-01-10T12:00:00"}
+}
+
+tests {
+  test("Fecha ambigua: HTTP 400", function () { expect(res.status).to.equal(400); });
+}

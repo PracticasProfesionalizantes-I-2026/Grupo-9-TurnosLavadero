@@ -1,0 +1,23 @@
+meta {
+  name: Rechazar cliente ajeno antes del service
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/turnos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{clienteToken}}
+}
+
+body:json {
+  {"clienteId":"ffffffff-ffff-ffff-ffff-ffffffffffff","servicioId":"{{servicioId}}","fechaHora":"2099-01-10T12:00:00-03:00"}
+}
+
+tests {
+  test("Cliente ajeno: HTTP 403", function () { expect(res.status).to.equal(403); });
+}

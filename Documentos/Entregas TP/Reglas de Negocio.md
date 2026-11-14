@@ -12,8 +12,10 @@
 | **RN-08** | Todo servicio debe tener un importe mayor que cero. |
 | **RN-09** | Un servicio relacionado con turnos no puede eliminarse físicamente; debe rechazarse la operación o desactivarse. |
 | **RN-10** | Un cliente solo puede consultar, modificar o cancelar sus propios turnos. Los empleados y administradores pueden operar sobre cualquier turno. |
-| **RN-11** | Un turno nuevo o reprogramado debe tener una fecha y hora futuras. |
+| **RN-11** | Un turno nuevo o reprogramado debe tener una fecha y hora estrictamente futuras respecto al reloj UTC del servidor, sin tolerancia para fechas pasadas. |
 
 Estas reglas utilizan una numeración única para todo el proyecto. Cada Caso de Uso referencia exclusivamente los identificadores que le corresponden.
 
 **Duración:** 1 a 480 minutos por servicio. Cada turno guarda inicio, duración y fin. Cambiar solo el catálogo no modifica reservas existentes. Disponibilidad, alta y modificación comprueban el intervalo completo; la cancelación lo libera.
+
+**Zona horaria:** alta, reprogramación y consulta de disponibilidad exigen ISO 8601 con `Z` o un offset explícito, por ejemplo `2099-01-10T12:00:00-03:00`. Una fecha sin zona se rechaza con HTTP 400 para evitar interpretaciones dependientes del equipo. Se compara y persiste el instante en UTC. El reloj del dispositivo no define el presente del sistema: la tolerancia de reserva es cero, independientemente de la tolerancia usada para validar tokens JWT. `IClock` permite probar el límite temporal y en producción utiliza `DateTimeOffset.UtcNow`.

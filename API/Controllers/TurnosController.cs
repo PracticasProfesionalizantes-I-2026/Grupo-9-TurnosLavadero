@@ -3,13 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using TurnosLavadero.BusinessLogic.Interfaces;
 using TurnosLavadero.Shared.DTOs.Turnos;
 using TurnosLavadero.Shared.Exceptions;
+using TurnosLavadero.Shared.Enums;
+using TurnosLavadero.Shared.Validation;
 
 namespace TurnosLavadero.API.Controllers;
 
 [ApiController]
 [Authorize]
 [Route("api/turnos")]
-public sealed class TurnosController(ITurnoService turnoService) : ControllerBase
+public sealed class TurnosController(ITurnoService turnoService, IActorContext actorContext) : ControllerBase
 {
     [HttpGet("mis-turnos")]
     public Task<IActionResult> GetMine(CancellationToken cancellationToken) =>
@@ -23,17 +25,29 @@ public sealed class TurnosController(ITurnoService turnoService) : ControllerBas
 
     [HttpGet("disponibilidad")]
     public Task<IActionResult> IsAvailable(
-        [FromQuery] DateTimeOffset fechaHora,
+        [FromQuery] string fechaHora,
         [FromQuery] Guid servicioId,
         [FromQuery] Guid? excludeId,
         CancellationToken cancellationToken) => ExecuteAsync(async () =>
-            Ok(new { disponible = await turnoService.IsAvailableAsync(fechaHora, servicioId, excludeId, cancellationToken) }));
+        {
+            if (!ExplicitOffsetDateTime.TryParse(fechaHora, out var fecha))
+                return Problem(ExplicitOffsetDateTime.ErrorMessage, statusCode: StatusCodes.Status400BadRequest);
+
+            return Ok(new { disponible = await turnoService.IsAvailableAsync(fecha, servicioId, excludeId, cancellationToken) });
+        });
 
     [HttpPost]
     public Task<IActionResult> Create(
         TurnoCreateDTO dto,
         CancellationToken cancellationToken) => ExecuteAsync(async () =>
     {
+        // Rechazo explícito antes de invocar negocio. El service conserva la misma
+        // defensa para llamadas que no ingresen por este controller.
+        if (actorContext.Rol == RolUsuario.Cliente
+            && (!actorContext.ClienteId.HasValue
+                || dto.ClienteId.HasValue && dto.ClienteId != actorContext.ClienteId))
+            return Problem("El cliente solo puede crear turnos propios.", statusCode: StatusCodes.Status403Forbidden);
+
         var created = await turnoService.CreateAsync(dto, cancellationToken);
         return StatusCode(StatusCodes.Status201Created, created);
     });
